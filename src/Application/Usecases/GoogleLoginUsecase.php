@@ -1,0 +1,53 @@
+<?php
+namespace App\Application\Usecases;
+
+use Kreait\Firebase\Factory;
+use App\Repositories\UserRepository;
+use App\Services\JwtService;
+
+class GoogleLoginUseCase
+{
+  private $auth;
+  private UserRepository $userRepo;
+
+  public function __construct(UserRepository $userRepo)
+  {
+    $this->userRepo = $userRepo;
+    $f = new Factory();
+    $factory = $f->withServiceAccount(
+      __DIR__ . "/../../../config/firebase.json",
+    );
+
+    $this->auth = $factory->createAuth();
+  }
+
+  public function execute(string $idToken): array
+  {
+    // Firebase IDトークン検証
+    $verifiedIdToken = $this->auth->verifyIdToken($idToken);
+
+    $uid = $verifiedIdToken->claims()->get("sub");
+    $email = $verifiedIdToken->claims()->get("email");
+    $name = $verifiedIdToken->claims()->get("name") ?? "";
+    $picture = $verifiedIdToken->claims()->get("picture") ?? "";
+
+    // DB処理
+    $user = $this->userRepo->findByGoogleId($uid);
+
+    $isNew = false;
+
+    if (!$user) {
+      $userId = $this->userRepo->create($uid, $email, $name, $picture);
+      $isNew = true;
+    } else {
+      $userId = $user["id"];
+    }
+
+    return [
+      "access_token" => JwtService::generateAccessToken($userId),
+      "refresh_token" => JwtService::generateRefreshToken($userId),
+      "user_id" => $userId,
+      "is_new" => $isNew,
+    ];
+  }
+}

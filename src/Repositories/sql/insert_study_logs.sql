@@ -1,0 +1,20 @@
+INSERT INTO study_logs 
+(
+  user_id,
+  category_id,
+  unit_id,
+  question_id,
+  is_correct,
+  session_id,
+  duration_seconds
+) 
+VALUES 
+(
+  :user_id,
+  :category_id,
+  :unit_id,
+  :question_id,
+  :is_correct,
+  :session_id,
+  :duration_seconds
+);
