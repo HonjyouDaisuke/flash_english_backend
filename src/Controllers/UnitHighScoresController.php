@@ -2,14 +2,14 @@
 
 namespace App\Controllers;
 
-use App\Application\UseCases\SaveStudyLogUseCase;
+use App\Application\UseCases\SaveUnitHighScoreUseCase;
 
-class StudyLogController
+class UnitHighScoresController
 {
-	private SaveStudyLogUseCase $useCase;
+	private SaveUnitHighScoreUseCase $useCase;
 	private string $logFile = __DIR__ . "/../../public/debug.log";
 
-	public function __construct(SaveStudyLogUseCase $useCase)
+	public function __construct(SaveUnitHighScoreUseCase $useCase)
 	{
 		$this->useCase = $useCase;
 	}
