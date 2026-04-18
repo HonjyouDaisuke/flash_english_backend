@@ -1,28 +1,17 @@
 <?php
 require_once __DIR__ . "/../vendor/autoload.php";
 
+use App\Config\Database;
 use App\Controllers\AuthController;
 use App\Controllers\StudyLogController;
-use App\Config\Database;
+use App\Controllers\UnitHighScoresController;
 use App\Repositories\UserRepository;
+use App\Repositories\UnitHighScoreRepository;
 use App\Application\Usecases\GoogleLoginUseCase;
 use App\Application\Usecases\SaveStudyLogUseCase;
+use App\Application\Usecases\SaveUnitHighScoreUseCase;
 use App\Repositories\StudyLogRepository;
-
-$authHeader =
-  $_SERVER["HTTP_AUTHORIZATION"] ??
-  ($_SERVER["REDIRECT_HTTP_AUTHORIZATION"] ?? null);
-
-if (!$authHeader && function_exists("apache_request_headers")) {
-  $headers = apache_request_headers();
-  if (isset($headers["Authorization"])) {
-    $authHeader = $headers["Authorization"];
-  }
-}
-
-if ($authHeader) {
-  $_SERVER["HTTP_AUTHORIZATION"] = $authHeader;
-}
+use App\Middleware\AuthMiddleware;
 
 header("Content-Type: application/json");
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
@@ -35,28 +24,37 @@ $config = require __DIR__ . "/../src/config/env.local.php";
 // ✅ DBはここだけ
 $db = Database::connect($config);
 
-// ✅ 依存関係を組み立てる
+// DI生成
+// Repository
 $userRepo = new UserRepository($db);
-$useCase = new GoogleLoginUseCase($userRepo);
-$controller = new AuthController($useCase);
+$studyLogRepo = new StudyLogRepository($db);
+$unitHighScoreRepo = new UnitHighScoreRepository($db);
+
+// Contorller
+$authController = new AuthController(new GoogleLoginUseCase($userRepo));
+$studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo));
+$unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo));
 
 // ルーティング
-if ($uri === "/api/auth/google" && $method === "POST") {
-  $controller->google();
-  exit();
-}
+$routes = [
+	// 認証不要
+	"POST /api/auth/google" => fn() => $authController->google(),
 
-$studyLogRepo = new StudyLogRepository($db);
-$useCase = new SaveStudyLogUseCase($studyLogRepo);
-$controller = new StudyLogController($useCase);
-if ($uri === "/api/study-log" && $method === "POST") {
-  $controller->save();
-  exit();
-}
+	// 認証必要
+	"POST /api/study-log" => function () use ($studyLogController) {
+		$userId = AuthMiddleware::handle();
+		$studyLogController->save($userId);
+	},
 
-if ($uri === "/api/health") {
-  echo json_encode(["status" => "ok"]);
-  exit();
+	"POST /api/unit-high-scores" => function () use ($unitHighScoresController) {
+		$userId = AuthMiddleware::handle();
+		$unitHighScoresController->save($userId);
+	},
+];
+$key = "$method $uri";
+if (isset($routes[$key])) {
+	$routes[$key]();
+	exit();
 }
 
 http_response_code(404);
