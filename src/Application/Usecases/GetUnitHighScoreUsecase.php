@@ -5,7 +5,7 @@ namespace App\Application\UseCases;
 use App\Repositories\UnitHighScoreRepository;
 use App\Services\JwtService;
 
-class SaveUnitHighScoreUseCase
+class GetUnitHighScoreUseCase
 {
 	private UnitHighScoreRepository $repo;
 
@@ -14,15 +14,20 @@ class SaveUnitHighScoreUseCase
 		$this->repo = $repo;
 	}
 
-	public function execute(string $userId, array $data): void
+	public function get(string $userId, array $data): array
 	{
-		file_put_contents("debug.log", "DB access start." . $data["achieved_at"] . "\n", FILE_APPEND);
-		$this->repo->save(
+		return $this->repo->getHighScoreInfo(
 			$userId,
 			$data["category_id"],
 			$data["unit_id"],
-			$data["score"],
-			$data["achieved_at"],
+		);
+	}
+
+	public function getAll(string $userId, array $data): array
+	{
+		return $this->repo->getAllHighScoreInfo(
+			$userId,
+			$data["category_id"],
 		);
 	}
 }

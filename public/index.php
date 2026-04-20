@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../vendor/autoload.php";
 
+use App\Application\UseCases\GetUnitHighScoreUseCase;
 use App\Config\Database;
 use App\Controllers\AuthController;
 use App\Controllers\StudyLogController;
@@ -33,7 +34,7 @@ $unitHighScoreRepo = new UnitHighScoreRepository($db);
 // Contorller
 $authController = new AuthController(new GoogleLoginUseCase($userRepo));
 $studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo));
-$unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo));
+$unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo), new GetUnitHighScoreUseCase($unitHighScoreRepo));
 
 // ルーティング
 $routes = [
@@ -46,12 +47,19 @@ $routes = [
 		$studyLogController->save($userId);
 	},
 
-	"POST /api/unit-high-scores" => function () use ($unitHighScoresController) {
+	"POST /api/save-unit-high-scores" => function () use ($unitHighScoresController) {
 		$userId = AuthMiddleware::handle();
 		$unitHighScoresController->save($userId);
 	},
+
+	"POST /api/getall-unit-high-scores" => function () use ($unitHighScoresController) {
+		$userId = AuthMiddleware::handle();
+		$unitHighScoresController->getAll($userId);
+	},
 ];
+
 $key = "$method $uri";
+file_put_contents("debug.log", "API key = " . $key . "\n", FILE_APPEND);
 if (isset($routes[$key])) {
 	$routes[$key]();
 	exit();
