@@ -18,10 +18,12 @@ jobs:
       - run: composer install --no-interaction --prefer-dist
       - run: composer test
 
-      - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Upload to Sakura via SCP
+        uses: appleboy/scp-action@v0.1.7
         with:
-          server: ${{ secrets.SAKURA_HOST }}
+          host: ${{ secrets.SAKURA_HOST }}
           username: ${{ secrets.SAKURA_USER }}
           password: ${{ secrets.SAKURA_PASS }}
-          local-dir: ./
-          server-dir: /home/kobe-football/www/flash_english_test/
+          port: 22
+          source: "./*"
+          target: "/home/kobe-football/www/flash_english_test/"
