@@ -27,7 +27,7 @@ Thumbs.db
 /cache/
 
 # PHPUnit
-/phpunit.xml
+# /phpunit.xml
 
 # Node（もし使うなら）
 node_modules/

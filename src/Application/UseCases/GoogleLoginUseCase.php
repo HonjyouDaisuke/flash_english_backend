@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Usecases;
+namespace App\Application\UseCases;
 
 use Kreait\Firebase\Factory;
 use App\Repositories\UserRepository;
@@ -28,7 +28,7 @@ class GoogleLoginUseCase
 		try {
 			$verifiedIdToken = $this->auth->verifyIdToken($idToken, true, 60);
 		} catch (\Throwable $e) {
-			file_put_contents("debug.log", "VERIFY ERROR: " . $e->getMessage() . "\n", FILE_APPEND);
+			logger()->error('Verify Error!' . $e->getMessage());
 			throw $e;
 		}
 		$uid = $verifiedIdToken->claims()->get("sub");

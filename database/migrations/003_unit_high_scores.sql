@@ -6,6 +6,7 @@ CREATE TABLE unit_high_scores (
     category_id INT,
     unit_id INT,
     high_score INT NOT NULL DEFAULT 0,
+    achieved_at VARCHAR(50),
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
