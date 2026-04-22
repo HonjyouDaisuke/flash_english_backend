@@ -28,7 +28,7 @@ class GoogleLoginUseCase
 		try {
 			$verifiedIdToken = $this->auth->verifyIdToken($idToken, true, 60);
 		} catch (\Throwable $e) {
-			file_put_contents("debug.log", "VERIFY ERROR: " . $e->getMessage() . "\n", FILE_APPEND);
+			logger()->error('Verify Error!' . $e->getMessage());
 			throw $e;
 		}
 		$uid = $verifiedIdToken->claims()->get("sub");

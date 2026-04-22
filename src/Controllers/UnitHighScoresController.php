@@ -19,14 +19,14 @@ class UnitHighScoresController
 
 	public function save(string $userId): void
 	{
-		file_put_contents("debug.log", "Start Save...\n", FILE_APPEND);
+		logger()->debug('Start Save...');
 		$input = json_decode(file_get_contents("php://input"), true);
 		if (!$input) {
 			http_response_code(400);
 			echo json_encode(["error" => "Invalid JSON"]);
 			return;
 		}
-		file_put_contents("debug.log", "DB Save...\n", FILE_APPEND);
+		logger()->debug('DB save...');
 		try {
 			$this->saveUseCase->execute($userId, $input);
 			echo json_encode(["success" => "true"]);

@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../bootstrap/logger.php';
 
 use App\Application\UseCases\GetUnitHighScoreUseCase;
 use App\Config\Database;
@@ -59,7 +60,7 @@ $routes = [
 ];
 
 $key = "$method $uri";
-file_put_contents("debug.log", "API key = " . $key . "\n", FILE_APPEND);
+logger()->debug("API key = " . $key);
 if (isset($routes[$key])) {
 	$routes[$key]();
 	exit();
