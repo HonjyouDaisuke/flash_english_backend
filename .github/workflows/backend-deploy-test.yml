@@ -23,7 +23,7 @@ jobs:
         with:
           host: ${{ secrets.SAKURA_HOST }}
           username: ${{ secrets.SAKURA_USER }}
-          password: ${{ secrets.SAKURA_PASS }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
           source: "./*"
           target: "/home/kobe-football/www/flash_english_test/"
