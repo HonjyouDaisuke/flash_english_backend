@@ -1,33 +1,29 @@
-name: Backend Unit Test
+name: Deploy Test Server
 
 on:
-  push:
-    paths:
-      - "src/**"
-      - "tests/**"
-      - "composer.json"
-      - "composer.lock"
-      - ".github/workflows/backend-test.yml"
+  workflow_dispatch:
 
 jobs:
-  phpunit:
+  deploy-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
           tools: composer
 
-      - name: Show PHP version
-        run: php -v
+      - run: composer install --no-interaction --prefer-dist
+      - run: composer test
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
-
-      - name: Run PHPUnit
-        run: composer test
+      - name: Upload to Sakura via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          source: "./*"
+          target: "/home/kobe-football/www/flash_english_test/"
