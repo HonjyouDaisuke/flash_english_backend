@@ -3,16 +3,15 @@ name: Backend Unit Test
 on:
   push:
     paths:
-      - "backend/**"
+      - "src/**"
+      - "tests/**"
+      - "composer.json"
+      - "composer.lock"
       - ".github/workflows/backend-test.yml"
 
 jobs:
   phpunit:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: backend
 
     steps:
       - name: Checkout source
