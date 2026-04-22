@@ -8,9 +8,9 @@ use App\Controllers\StudyLogController;
 use App\Controllers\UnitHighScoresController;
 use App\Repositories\UserRepository;
 use App\Repositories\UnitHighScoreRepository;
-use App\Application\Usecases\GoogleLoginUseCase;
-use App\Application\Usecases\SaveStudyLogUseCase;
-use App\Application\Usecases\SaveUnitHighScoreUseCase;
+use App\Application\UseCases\GoogleLoginUseCase;
+use App\Application\UseCases\SaveStudyLogUseCase;
+use App\Application\UseCases\SaveUnitHighScoreUseCase;
 use App\Repositories\StudyLogRepository;
 use App\Middleware\AuthMiddleware;
 

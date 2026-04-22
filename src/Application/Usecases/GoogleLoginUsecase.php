@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Usecases;
+namespace App\Application\UseCases;
 
 use Kreait\Firebase\Factory;
 use App\Repositories\UserRepository;

@@ -1,0 +1,1 @@
+{"version":2,"defects":{"JwtServiceTest::testGenerateAccessTokenReturnsString":5,"JwtServiceTest::testGenerateRefreshTokenReturnsString":5,"JwtServiceTest::testVerifyReturnsUserId":5},"times":{"JwtServiceTest::testGenerateAccessTokenReturnsString":0.003,"JwtServiceTest::testGenerateRefreshTokenReturnsString":0,"JwtServiceTest::testVerifyReturnsUserId":0.001}}
