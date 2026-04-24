@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.SAKURA_USER }}
           password: ${{ secrets.SAKURA_PASS }}
           local-dir: ./
-          server-dir: /home/kobe-football/www/flash_english_test/
+          server-dir: /home/kobe-football/www/flash_english/
           exclude: |
             **/.git*
             **/.github*

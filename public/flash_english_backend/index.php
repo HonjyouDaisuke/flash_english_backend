@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../bootstrap/logger.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../bootstrap/logger.php';
 
 use App\Application\UseCases\GetUnitHighScoreUseCase;
 use App\Config\Database;

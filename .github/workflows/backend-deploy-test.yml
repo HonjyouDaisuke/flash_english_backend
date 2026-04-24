@@ -8,22 +8,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Source
+        uses: actions/checkout@v4
 
-      - uses: shivammathur/setup-php@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
           tools: composer
 
-      - run: composer install --no-interaction --prefer-dist
-      - run: composer test
+      - name: Install Dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
 
-      - name: Upload to Sakura via SCP
-        uses: appleboy/scp-action@v0.1.7
+      - name: Run Tests
+        run: composer test
+
+      # =========================
+      # Clean Remote Directories
+      # =========================
+      - name: Clean Remote Directories
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SAKURA_HOST }}
           username: ${{ secrets.SAKURA_USER }}
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
-          source: "./*"
-          target: "/home/kobe-football/www/flash_english_test/"
+          script: |
+            rm -rf /home/kobe-football/flash_english_backend_test/*
+            rm -rf /home/kobe-football/www/flash_english_backend_test/*
+
+      # =========================
+      # Private Area (www外)
+      # =========================
+      - name: Deploy Private App
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          source: "src/,vendor/,config/,bootstrap/,composer.json,composer.lock"
+          target: "/home/kobe-football/flash_english_backend_test/"
+          strip_components: 0
+          overwrite: true
+
+      # =========================
+      # Public Area (www配下)
+      # =========================
+      - name: Deploy Public Files
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          source: "public/index.php,public/.htaccess"
+          target: "/home/kobe-football/www/flash_english_backend_test/"
+          strip_components: 1
+          overwrite: true
