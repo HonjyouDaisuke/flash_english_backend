@@ -49,7 +49,13 @@ jobs:
           username: ${{ secrets.SAKURA_USER }}
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
-          source: "src/,vendor/,config/,bootstrap/,composer.json,composer.lock"
+          source: |
+            src/**
+            vendor/**
+            config/**
+            bootstrap/**
+            composer.json
+            composer.lock
           target: "/home/kobe-football/flash_english_backend_test/"
           strip_components: 0
           overwrite: false
@@ -64,7 +70,9 @@ jobs:
           username: ${{ secrets.SAKURA_USER }}
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
-          source: "public/index.php,public/.htaccess"
+          source: |
+            public/index.php
+            public/.htaccess
           target: "/home/kobe-football/www/flash_english_backend_test/"
           strip_components: 1
           overwrite: false
