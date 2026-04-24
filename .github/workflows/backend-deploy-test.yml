@@ -34,8 +34,8 @@ jobs:
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
           script: |
-            rm -rf /home/kobe-football/flash_english_backend_test/*
-            rm -rf /home/kobe-football/www/flash_english_backend_test/*
+            find /home/kobe-football/flash_english_backend_test -mindepth 1 -delete
+            find /home/kobe-football/www/flash_english_backend_test -mindepth 1 -delete
 
       # =========================
       # Private Area (www外)
