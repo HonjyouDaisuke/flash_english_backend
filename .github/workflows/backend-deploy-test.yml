@@ -52,7 +52,7 @@ jobs:
           source: "src/,vendor/,config/,bootstrap/,composer.json,composer.lock"
           target: "/home/kobe-football/flash_english_backend_test/"
           strip_components: 0
-          overwrite: true
+          overwrite: false
 
       # =========================
       # Public Area (www配下)
@@ -67,4 +67,4 @@ jobs:
           source: "public/index.php,public/.htaccess"
           target: "/home/kobe-football/www/flash_english_backend_test/"
           strip_components: 1
-          overwrite: true
+          overwrite: false
