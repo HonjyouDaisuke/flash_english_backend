@@ -24,10 +24,24 @@ jobs:
         run: composer test
 
       # =========================
+      # Clean Remote Directories
+      # =========================
+      - name: Clean Remote Directories
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          script: |
+            rm -rf /home/kobe-football/flash_english_backend_test/*
+            rm -rf /home/kobe-football/www/flash_english_backend_test/*
+
+      # =========================
       # Private Area (www外)
       # =========================
       - name: Deploy Private App
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SAKURA_HOST }}
           username: ${{ secrets.SAKURA_USER }}
@@ -42,7 +56,7 @@ jobs:
       # Public Area (www配下)
       # =========================
       - name: Deploy Public Files
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SAKURA_HOST }}
           username: ${{ secrets.SAKURA_USER }}
