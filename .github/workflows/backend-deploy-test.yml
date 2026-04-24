@@ -34,8 +34,10 @@ jobs:
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
           script: |
-            rm -rf /home/kobe-football/flash_english_backend_test/*
-            rm -rf /home/kobe-football/www/flash_english_backend_test/*
+            mkdir -p /home/kobe-football/flash_english_backend_test
+            mkdir -p /home/kobe-football/www/flash_english_backend_test
+            find /home/kobe-football/flash_english_backend_test -mindepth 1 -delete
+            find /home/kobe-football/www/flash_english_backend_test -mindepth 1 -delete
 
       # =========================
       # Private Area (www外)
@@ -47,10 +49,16 @@ jobs:
           username: ${{ secrets.SAKURA_USER }}
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
-          source: "src/,vendor/,config/,bootstrap/,composer.json,composer.lock"
+          source: |
+            src/**
+            vendor/**
+            config/**
+            bootstrap/**
+            composer.json
+            composer.lock
           target: "/home/kobe-football/flash_english_backend_test/"
           strip_components: 0
-          overwrite: true
+          overwrite: false
 
       # =========================
       # Public Area (www配下)
@@ -62,7 +70,9 @@ jobs:
           username: ${{ secrets.SAKURA_USER }}
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
-          source: "public/index.php,public/.htaccess"
+          source: |
+            public/index.php
+            public/.htaccess
           target: "/home/kobe-football/www/flash_english_backend_test/"
           strip_components: 1
-          overwrite: true
+          overwrite: false
