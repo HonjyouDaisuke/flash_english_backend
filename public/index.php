@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../bootstrap/logger.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../bootstrap/logger.php';
 
 use App\Application\UseCases\GetUnitHighScoreUseCase;
 use App\Config\Database;
@@ -18,7 +18,7 @@ use App\Middleware\AuthMiddleware;
 header("Content-Type: application/json");
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $method = $_SERVER["REQUEST_METHOD"];
-
+logger()->debug("index.php try...");
 $uri = str_replace("/flash_english_backend", "", $uri);
 // ✅ configはここだけ
 $config = require __DIR__ . "/../src/config/env.local.php";
