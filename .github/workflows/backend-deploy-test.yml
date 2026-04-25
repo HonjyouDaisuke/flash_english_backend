@@ -71,15 +71,15 @@ jobs:
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
           script: |
-            mkdir -p /home/kobe-football/flash_english_backend_test
-            mkdir -p /home/kobe-football/flash_english_backend_test/config
-            mkdir -p /home/kobe-football/www/flash_english_backend_test
+            mkdir -p /home/kobe-football/flash_english_backend
+            mkdir -p /home/kobe-football/flash_english_backend/config
+            mkdir -p /home/kobe-football/www/flash_english_backend
 
-            cd /home/kobe-football/flash_english_backend_test
+            cd /home/kobe-football/flash_english_backend
             rm -rf src vendor bootstrap
             rm -f composer.json composer.lock
 
-            cd /home/kobe-football/www/flash_english_backend_test
+            cd /home/kobe-football/www/flash_english_backend
             rm -rf *
 
       # =========================
@@ -93,7 +93,7 @@ jobs:
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
           source: "deploy-private/*"
-          target: "/home/kobe-football/flash_english_backend_test/"
+          target: "/home/kobe-football/flash_english_backend/"
           strip_components: 1
           overwrite: false
 
@@ -108,7 +108,7 @@ jobs:
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
           source: "deploy-public/*"
-          target: "/home/kobe-football/www/flash_english_backend_test/"
+          target: "/home/kobe-football/www/flash_english_backend/"
           strip_components: 1
           overwrite: false
 
@@ -123,6 +123,6 @@ jobs:
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
           source: "deploy-config/firebase.json"
-          target: "/home/kobe-football/flash_english_backend_test/config/"
+          target: "/home/kobe-football/flash_english_backend/config/"
           strip_components: 1
           overwrite: false

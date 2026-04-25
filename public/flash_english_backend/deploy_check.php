@@ -23,8 +23,8 @@ echo "Time: " . date('Y-m-d H:i:s') . "\n\n";
  * private 側:
  * /home/kobe-football/flash_english_backend_test
  */
-$privateRoot = dirname(__DIR__, 2) . '/flash_english_backend';
-
+$privateRoot = dirname(__DIR__, 2);
+echo dirname(__DIR__, 2) . "\n";
 echo "[1] Private Path Check\n";
 echo $privateRoot . "\n";
 echo is_dir($privateRoot) ? "OK\n\n" : "NG\n\n";
