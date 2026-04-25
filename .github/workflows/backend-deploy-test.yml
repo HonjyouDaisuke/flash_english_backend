@@ -51,7 +51,18 @@ jobs:
           cp public/flash_english_backend/.htaccess deploy-public/
 
       # =========================
+      # Firebase Config (Secretから生成)
+      # =========================
+      - name: Build Firebase Config
+        run: |
+          mkdir -p deploy-config
+          cat <<EOF > deploy-config/firebase.json
+          ${{ secrets.FIREBASE_JSON_TEST }}
+          EOF
+
+      # =========================
       # Clean Remote Directories
+      # config は残す
       # =========================
       - name: Clean Remote Directories
         uses: appleboy/ssh-action@v1
@@ -62,9 +73,15 @@ jobs:
           port: 22
           script: |
             mkdir -p /home/kobe-football/flash_english_backend_test
+            mkdir -p /home/kobe-football/flash_english_backend_test/config
             mkdir -p /home/kobe-football/www/flash_english_backend_test
-            find /home/kobe-football/flash_english_backend_test -mindepth 1 -delete
-            find /home/kobe-football/www/flash_english_backend_test -mindepth 1 -delete
+
+            cd /home/kobe-football/flash_english_backend_test
+            rm -rf src vendor bootstrap
+            rm -f composer.json composer.lock
+
+            cd /home/kobe-football/www/flash_english_backend_test
+            rm -rf *
 
       # =========================
       # Deploy Private Area
@@ -95,3 +112,18 @@ jobs:
           target: "/home/kobe-football/www/flash_english_backend_test/"
           strip_components: 1
           overwrite: false
+
+      # =========================
+      # Deploy Firebase Config
+      # =========================
+      - name: Deploy Firebase Config
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          source: "deploy-config/firebase.json"
+          target: "/home/kobe-football/flash_english_backend_test/config/"
+          strip_components: 1
+          overwrite: true
