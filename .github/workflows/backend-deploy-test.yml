@@ -57,7 +57,7 @@ jobs:
         run: |
           mkdir -p deploy-config
           cat <<EOF > deploy-config/firebase.json
-          ${{ secrets.FIREBASE_JSON_TEST }}
+          ${{ secrets.FIREBASE_JSON }}
           EOF
 
       # =========================
