@@ -8,6 +8,9 @@ class AuthMiddleware
 {
 	public static function handle(): string
 	{
+		logger()->debug('AuthMiddleware start');
+		logger()->debug(json_encode(getallheaders()));
+
 		$authHeader =
 			$_SERVER["HTTP_AUTHORIZATION"] ??
 			($_SERVER["REDIRECT_HTTP_AUTHORIZATION"] ?? null);
