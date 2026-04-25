@@ -8,20 +8,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # =========================
+      # Checkout
+      # =========================
       - name: Checkout Source
         uses: actions/checkout@v4
 
+      # =========================
+      # Setup PHP
+      # =========================
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
           tools: composer
 
+      # =========================
+      # Install / Test
+      # =========================
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
 
       - name: Run Tests
         run: composer test
+
+      # =========================
+      # Build Deploy Package
+      # =========================
+      - name: Build Private Package
+        run: |
+          mkdir -p deploy-private
+          cp -R src deploy-private/
+          cp -R vendor deploy-private/
+          cp -R config deploy-private/
+          cp -R bootstrap deploy-private/
+          cp composer.json deploy-private/
+          cp composer.lock deploy-private/
+
+      - name: Build Public Package
+        run: |
+          mkdir -p deploy-public
+          cp public/index.php deploy-public/
+          cp public/.htaccess deploy-public/
 
       # =========================
       # Clean Remote Directories
@@ -40,7 +68,7 @@ jobs:
             find /home/kobe-football/www/flash_english_backend_test -mindepth 1 -delete
 
       # =========================
-      # Private Area (www外)
+      # Deploy Private Area
       # =========================
       - name: Deploy Private App
         uses: appleboy/scp-action@v1
@@ -49,19 +77,12 @@ jobs:
           username: ${{ secrets.SAKURA_USER }}
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
-          source: |
-            src/**
-            vendor/**
-            config/**
-            bootstrap/**
-            composer.json
-            composer.lock
+          source: "deploy-private/*"
           target: "/home/kobe-football/flash_english_backend_test/"
-          strip_components: 0
           overwrite: false
 
       # =========================
-      # Public Area (www配下)
+      # Deploy Public Area
       # =========================
       - name: Deploy Public Files
         uses: appleboy/scp-action@v1
@@ -70,9 +91,6 @@ jobs:
           username: ${{ secrets.SAKURA_USER }}
           key: ${{ secrets.SAKURA_SSH_KEY }}
           port: 22
-          source: |
-            public/index.php
-            public/.htaccess
+          source: "deploy-public/*"
           target: "/home/kobe-football/www/flash_english_backend_test/"
-          strip_components: 1
           overwrite: false
