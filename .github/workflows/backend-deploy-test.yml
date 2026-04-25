@@ -40,7 +40,6 @@ jobs:
           mkdir -p deploy-private
           cp -R src deploy-private/
           cp -R vendor deploy-private/
-          cp -R config deploy-private/
           cp -R bootstrap deploy-private/
           cp composer.json deploy-private/
           cp composer.lock deploy-private/
