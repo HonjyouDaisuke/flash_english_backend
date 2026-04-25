@@ -47,8 +47,7 @@ jobs:
       - name: Build Public Package
         run: |
           mkdir -p deploy-public
-          cp public/index.php deploy-public/
-          cp public/.htaccess deploy-public/
+          cp public/ deploy-public/
 
       # =========================
       # Firebase Config (Secretから生成)
