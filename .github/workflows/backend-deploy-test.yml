@@ -126,4 +126,4 @@ jobs:
           source: "deploy-config/firebase.json"
           target: "/home/kobe-football/flash_english_backend_test/config/"
           strip_components: 1
-          overwrite: true
+          overwrite: false
