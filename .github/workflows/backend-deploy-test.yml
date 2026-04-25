@@ -78,6 +78,7 @@ jobs:
           port: 22
           source: "deploy-private/*"
           target: "/home/kobe-football/flash_english_backend_test/"
+          strip_components: 1
           overwrite: false
 
       # =========================
@@ -92,4 +93,5 @@ jobs:
           port: 22
           source: "deploy-public/*"
           target: "/home/kobe-football/www/flash_english_backend_test/"
+          strip_components: 1
           overwrite: false
