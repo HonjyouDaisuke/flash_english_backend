@@ -80,7 +80,7 @@ jobs:
             rm -f composer.json composer.lock
 
             cd /home/kobe-football/www/flash_english_backend
-            rm -rf *
+            rm -rf ./* || true
 
       # =========================
       # Deploy Private Area
