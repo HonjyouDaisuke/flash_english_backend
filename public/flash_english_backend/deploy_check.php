@@ -1,8 +1,9 @@
 <?php
 
 declare(strict_types=1);
-
 require_once __DIR__ . '/../../bootstrap/app.php';
+require_once BASE_PATH . '/bootstrap/logger.php';
+require_once BASE_PATH . '/vendor/autoload.php';
 
 
 header('Content-Type: text/plain; charset=utf-8');

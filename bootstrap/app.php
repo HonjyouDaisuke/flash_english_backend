@@ -4,6 +4,7 @@ require_once __DIR__ . '/env.php';
 
 // .env読み込み
 loadEnv(__DIR__ . '/../.env');
+echo __DIR__ . "\n\n";
 
 // 環境定義
 define('APP_ENV', getenv('APP_ENV') ?: 'local');
