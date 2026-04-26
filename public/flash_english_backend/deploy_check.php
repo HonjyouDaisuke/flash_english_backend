@@ -1,7 +1,14 @@
 <?php
 
 declare(strict_types=1);
-require_once __DIR__ . '/../../bootstrap/app.php';
+echo __DIR__ . '\n\n';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+echo "BOOT START\n";
+require_once __DIR__ . '/../../flash_english_backend/bootstrap/app.php';
+echo "Base path = " . BASE_PATH;
 require_once BASE_PATH . '/bootstrap/logger.php';
 require_once BASE_PATH . '/vendor/autoload.php';
 

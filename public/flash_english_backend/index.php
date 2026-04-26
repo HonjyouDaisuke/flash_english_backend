@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../bootstrap/app.php';
-require_once __DIR__ . '/../../bootstrap/logger.php';
+require_once __DIR__ . '/../../flash_english_backend/bootstrap/app.php';
+require_once BASE_PATH . '/vendor/autoload.php';
+require_once BASE_PATH . '/bootstrap/logger.php';
 
 use App\Application\UseCases\GetUnitHighScoreUseCase;
 use App\Config\Database;
@@ -23,7 +23,7 @@ logger()->debug("index.php try...");
 logger()->debug($_SERVER["HTTP_AUTHORIZATION"] ?? 'NO AUTH');
 $uri = str_replace("/flash_english_backend", "", $uri);
 // ✅ configはここだけ
-$config = require BASE_PATH . "/src/config/env.php";
+$config = require BASE_PATH . "/src/config/env.local.php";
 
 // ✅ DBはここだけ
 $db = Database::connect($config);

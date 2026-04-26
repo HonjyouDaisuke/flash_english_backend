@@ -1,13 +1,14 @@
 # Composer
 /vendor/
+/flash_english_backend/vendor/
 
 # Environment files
 .env
 .env.*
 
 # Firebase / Secrets
-/config/firebase.json
-/config/*.json
+/flash_english_backend/config/firebase.json
+/flash_english_backend/config/*.json
 
 # Logs
 *.log

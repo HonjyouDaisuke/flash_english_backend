@@ -38,9 +38,9 @@ jobs:
       - name: Build Private Package
         run: |
           mkdir -p deploy-private
-          cp -R src deploy-private/
-          cp -R vendor deploy-private/
-          cp -R bootstrap deploy-private/
+          cp -R flash_english_backend/src deploy-private/
+          cp -R flash_english_backend/vendor deploy-private/
+          cp -R flash_english_backend/bootstrap deploy-private/
           cp composer.json deploy-private/
           cp composer.lock deploy-private/
 

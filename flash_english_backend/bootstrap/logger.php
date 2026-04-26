@@ -5,7 +5,7 @@ use Monolog\Level;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once BASE_PATH . '/../vendor/autoload.php';
 
 function logger(): Logger
 {
@@ -28,7 +28,7 @@ function logger(): Logger
 		default => Level::Debug,
 	};
 
-	$logDir = dirname(__DIR__) . '/storage/logs';
+	$logDir = BASE_PATH . '/storage/logs';
 	if (!is_dir($logDir)) {
 		mkdir($logDir, 0775, true);
 	}
