@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-echo __DIR__ . "\n\n";
-
 // ini_set('display_errors', '1');
 // ini_set('display_startup_errors', '1');
 // error_reporting(E_ALL);
@@ -102,7 +100,8 @@ try {
 
 	echo "DB Time: " . $row['now_time'] . "\n\n";
 } catch (Throwable $e) {
-	echo "NG: " . $e->getMessage() . "\n";
+	echo "NG\n";
+	error_log('[deploy_check] db error: ' . $e->getMessage());
 	exit;
 }
 
