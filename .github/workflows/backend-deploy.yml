@@ -6,36 +6,156 @@ on:
       - main
 
 jobs:
-  deploy:
+  deploy-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      # =========================
+      # Checkout
+      # =========================
+      - name: Checkout Source
         uses: actions/checkout@v4
 
+      # =========================
+      # Setup PHP
+      # =========================
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
           tools: composer
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+      # =========================
+      # Install / Test
+      # =========================
+      - name: Install Dependencies
+        run: |
+          cd flash_english_backend
+          composer install --no-interaction --prefer-dist --no-progress
 
-      - name: Run PHPUnit
-        run: composer test
+      - name: Run Tests
+        run: |
+          cd flash_english_backend
+          composer test
 
-      - name: Deploy to Sakura
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      # =========================
+      # Build Deploy Package
+      # =========================
+      - name: Build Private Package
+        run: |
+          mkdir -p deploy-private
+          cp -R flash_english_backend/src deploy-private/
+          cp -R flash_english_backend/vendor deploy-private/
+          cp -R flash_english_backend/bootstrap deploy-private/
+          cp flash_english_backend/composer.json deploy-private/
+          cp flash_english_backend/composer.lock deploy-private/
+
+      - name: Build Public Package
+        run: |
+          mkdir -p deploy-public
+          cp -R public/flash_english_backend/. deploy-public/
+
+      # =========================
+      # Build .env (from Secrets)
+      # =========================
+      - name: Build .env
+        run: |
+          cat <<EOF > .env
+          APP_ENV=${{ secrets.APP_ENV }}
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASS=${{ secrets.DB_PASS }}
+          EOF
+
+      # =========================
+      # Firebase Config (Secretから生成)
+      # =========================
+      - name: Build Firebase Config
+        run: |
+          mkdir -p deploy-config
+          cat <<EOF > deploy-config/firebase.json
+          ${{ secrets.FIREBASE_JSON }}
+          EOF
+
+      # =========================
+      # Clean Remote Directories
+      # config は残す
+      # =========================
+      - name: Clean Remote Directories
+        uses: appleboy/ssh-action@v1
         with:
-          server: ${{ secrets.SAKURA_HOST }}
+          host: ${{ secrets.SAKURA_HOST }}
           username: ${{ secrets.SAKURA_USER }}
-          password: ${{ secrets.SAKURA_PASS }}
-          local-dir: ./
-          server-dir: /home/kobe-football/www/flash_english/
-          exclude: |
-            **/.git*
-            **/.github*
-            **/tests/**
-            **/.env
-            **/phpunit.xml
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          script: |
+            mkdir -p /home/kobe-football/flash_english_backend
+            mkdir -p /home/kobe-football/flash_english_backend/config
+            mkdir -p /home/kobe-football/www/flash_english_backend
+
+            cd /home/kobe-football/flash_english_backend
+            rm -rf src vendor bootstrap
+            rm -f composer.json composer.lock
+
+            cd /home/kobe-football/www/flash_english_backend
+            rm -rf ./* || true
+
+      # =========================
+      # Deploy Private Area
+      # =========================
+      - name: Deploy Private App
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          source: "deploy-private/*"
+          target: "/home/kobe-football/flash_english_backend/"
+          strip_components: 1
+          overwrite: false
+
+      # =========================
+      # Deploy Public Area
+      # =========================
+      - name: Deploy Public Files
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          source: "deploy-public/*"
+          target: "/home/kobe-football/www/flash_english_backend/"
+          strip_components: 1
+          overwrite: false
+
+      # =========================
+      # Deploy Firebase Config
+      # =========================
+      - name: Deploy Firebase Config
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          source: "deploy-config/firebase.json"
+          target: "/home/kobe-football/flash_english_backend/config/"
+          strip_components: 1
+          overwrite: false
+
+      # =========================
+      # Deploy .env
+      # =========================
+      - name: Deploy .env
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          source: ".env"
+          target: "/home/kobe-football/flash_english_backend/"
+          overwrite: false

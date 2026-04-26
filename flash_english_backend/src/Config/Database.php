@@ -6,16 +6,26 @@ use PDO;
 
 class Database
 {
-  public static function connect(array $config): PDO
-  {
-    $pdo = new PDO(
-      "mysql:host={$config["db_host"]};port={$config["db_port"]};dbname={$config["db_name"]};charset=utf8mb4",
-      $config["db_user"],
-      $config["db_pass"],
-    );
+	public static function connect(): PDO
+	{
+		$dsn = sprintf(
+			'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
+			DB_HOST,
+			DB_PORT,
+			DB_NAME
+		);
 
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$pdo = new PDO(
+			$dsn,
+			DB_USER,
+			DB_PASS,
+			[
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+			]
+		);
+		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    return $pdo;
-  }
+		return $pdo;
+	}
 }

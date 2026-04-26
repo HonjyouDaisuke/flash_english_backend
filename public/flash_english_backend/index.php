@@ -26,7 +26,7 @@ $uri = str_replace("/flash_english_backend", "", $uri);
 $config = require BASE_PATH . "/src/config/env.local.php";
 
 // ✅ DBはここだけ
-$db = Database::connect($config);
+$db = Database::connect();
 
 // DI生成
 // Repository
