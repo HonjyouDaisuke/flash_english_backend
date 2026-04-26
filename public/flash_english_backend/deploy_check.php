@@ -71,13 +71,11 @@ try {
  * DB Connection Test
  */
 echo "[4] Database Connection Test\n";
-echo "db_host:" . DB_HOST . "\n";
-echo "db_host:" . DB_PORT . "\n";
-echo "db_host:" . DB_NAME . "\n";
-echo "db_host:" . DB_USER . "\n";
-echo "db_host:" . DB_PASS . "\n";
-
-
+// echo "db_host:" . DB_HOST . "\n";
+// echo "db_host:" . DB_PORT . "\n";
+// echo "db_host:" . DB_NAME . "\n";
+// echo "db_host:" . DB_USER . "\n";
+// echo "db_host:" . DB_PASS . "\n";
 
 try {
 	$dsn = sprintf(
