@@ -20,10 +20,8 @@ header("Content-Type: application/json");
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $method = $_SERVER["REQUEST_METHOD"];
 logger()->debug("index.php try...");
-logger()->debug($_SERVER["HTTP_AUTHORIZATION"] ?? 'NO AUTH');
+logger()->debug('Authorization header present: ' . (isset($_SERVER["HTTP_AUTHORIZATION"]) ? 'yes' : 'no'));
 $uri = str_replace("/flash_english_backend", "", $uri);
-// ✅ configはここだけ
-$config = require BASE_PATH . "/src/config/env.local.php";
 
 // ✅ DBはここだけ
 $db = Database::connect();
@@ -58,7 +56,7 @@ $routes = [
 	"POST /api/getall-unit-high-scores" => function () use ($unitHighScoresController) {
 		logger()->debug('get userId');
 		$userId = AuthMiddleware::handle();
-		logger()->debug('gat userId = ' . $userId);
+		logger()->debug('got userId = ' . $userId);
 		$unitHighScoresController->getAll($userId);
 	},
 ];

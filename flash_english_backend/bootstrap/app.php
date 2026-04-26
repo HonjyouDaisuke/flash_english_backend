@@ -28,7 +28,7 @@ if (APP_ENV === 'server') {
 } else {
 
 	// PHPファイル設定
-	$config = require BASE_PATH . '/src/config/env.local.php';
+	$config = require BASE_PATH . '/src/Config/env.local.php';
 
 	define('DB_HOST', $config['db_host']);
 	define('DB_PORT', $config['db_port']);

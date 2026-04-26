@@ -49,7 +49,7 @@ class UnitHighScoresController
 		logger()->debug('Load success...');
 		try {
 			$result = $this->getUseCase->get($userId, $input);
-			logger()->debug('Loaded data...' . $result);
+			logger()->debug('Loaded data', is_array($result) ? $result : ['result' => $result]);
 			echo json_encode($result);
 		} catch (\Exception $e) {
 			http_response_code(400);
