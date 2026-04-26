@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../bootstrap/logger.php';
+require_once __DIR__ . '/../../flash_english_backend/bootstrap/app.php';
+require_once BASE_PATH . '/vendor/autoload.php';
+require_once BASE_PATH . '/bootstrap/logger.php';
 
 use App\Application\UseCases\GetUnitHighScoreUseCase;
 use App\Config\Database;
@@ -18,13 +19,12 @@ use App\Middleware\AuthMiddleware;
 header("Content-Type: application/json");
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $method = $_SERVER["REQUEST_METHOD"];
-
+logger()->debug("index.php try...");
+logger()->debug('Authorization header present: ' . (isset($_SERVER["HTTP_AUTHORIZATION"]) ? 'yes' : 'no'));
 $uri = str_replace("/flash_english_backend", "", $uri);
-// ✅ configはここだけ
-$config = require __DIR__ . "/../src/config/env.local.php";
 
 // ✅ DBはここだけ
-$db = Database::connect($config);
+$db = Database::connect();
 
 // DI生成
 // Repository
@@ -54,7 +54,9 @@ $routes = [
 	},
 
 	"POST /api/getall-unit-high-scores" => function () use ($unitHighScoresController) {
+		logger()->debug('get userId');
 		$userId = AuthMiddleware::handle();
+		logger()->debug('got userId = ' . $userId);
 		$unitHighScoresController->getAll($userId);
 	},
 ];
