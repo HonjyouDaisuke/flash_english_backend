@@ -50,6 +50,19 @@ jobs:
           cp -R public/flash_english_backend/. deploy-public/
 
       # =========================
+      # Build .env (from Secrets)
+      # =========================
+      - name: Build .env
+        run: |
+          cat <<EOF > .env
+          APP_ENV=${{ secrets.APP_ENV }}
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASS=${{ secrets.DB_PASS }}
+          EOF
+
+      # =========================
       # Firebase Config (Secretから生成)
       # =========================
       - name: Build Firebase Config
@@ -125,4 +138,18 @@ jobs:
           source: "deploy-config/firebase.json"
           target: "/home/kobe-football/flash_english_backend/config/"
           strip_components: 1
+          overwrite: false
+
+      # =========================
+      # Deploy .env
+      # =========================
+      - name: Deploy .env
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SAKURA_HOST }}
+          username: ${{ secrets.SAKURA_USER }}
+          key: ${{ secrets.SAKURA_SSH_KEY }}
+          port: 22
+          source: ".env"
+          target: "/home/kobe-football/flash_english_backend/"
           overwrite: false
