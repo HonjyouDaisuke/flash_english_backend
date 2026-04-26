@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../bootstrap/app.php';
 require_once __DIR__ . '/../../bootstrap/logger.php';
 
 use App\Application\UseCases\GetUnitHighScoreUseCase;
@@ -22,7 +23,7 @@ logger()->debug("index.php try...");
 logger()->debug($_SERVER["HTTP_AUTHORIZATION"] ?? 'NO AUTH');
 $uri = str_replace("/flash_english_backend", "", $uri);
 // ✅ configはここだけ
-$config = require __DIR__ . "/../../src/config/env.local.php";
+$config = require BASE_PATH . "/src/config/env.php";
 
 // ✅ DBはここだけ
 $db = Database::connect($config);
