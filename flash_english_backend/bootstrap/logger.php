@@ -5,7 +5,7 @@ use Monolog\Level;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 
-require_once BASE_PATH . '/../vendor/autoload.php';
+require_once BASE_PATH . '/vendor/autoload.php';
 
 function logger(): Logger
 {
