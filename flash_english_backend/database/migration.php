@@ -1,24 +1,26 @@
 <?php
+require_once __DIR__ . '/../bootstrap/app.php';
+require_once BASE_PATH . '/bootstrap/logger.php';
+require_once BASE_PATH . '/vendor/autoload.php';
 
 // ==============================
-// 1. env 読み込み
+// 1. PDO接続
 // ==============================
-$env = require __DIR__ . '/../src/Config/env.local.php';
+$dsn = sprintf(
+	'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
+	DB_HOST,
+	DB_PORT,
+	DB_NAME
+);
 
-$host = $env['db_host'];
-$port = $env['db_port'];
-$dbname = $env['db_name'];
-$user = $env['db_user'];
-$password = $env['db_pass'];
-
-// ==============================
-// 2. PDO接続（DBなし）
-// ==============================
 $pdo = new PDO(
-	"mysql:host=$host;port=$port;charset=utf8mb4",
-	$user,
-	$password,
-	[PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+	$dsn,
+	DB_USER,
+	DB_PASS,
+	[
+		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+	]
 );
 
 function runSqlFiles(PDO $pdo, string $dir)
@@ -36,11 +38,11 @@ function runSqlFiles(PDO $pdo, string $dir)
 // ==============================
 // 3. DB作成
 // ==============================
-echo "== Create Database ==\n";
-runSqlFiles($pdo, __DIR__ . '/create_db');
+// echo "== Create Database ==\n";
+// runSqlFiles($pdo, __DIR__ . '/create_db');
 
 // DB選択（ハイフン対策）
-$pdo->exec("USE `$dbname`");
+// $pdo->exec("USE `$dbname`");
 
 // ==============================
 // 4. Migration
