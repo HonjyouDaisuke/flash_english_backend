@@ -45,6 +45,7 @@ jobs:
           cp -R flash_english_backend/src deploy-private/
           cp -R flash_english_backend/vendor deploy-private/
           cp -R flash_english_backend/bootstrap deploy-private/
+          cp -R flash_english_backend/database deploy-private/
           cp flash_english_backend/composer.json deploy-private/
           cp flash_english_backend/composer.lock deploy-private/
 
