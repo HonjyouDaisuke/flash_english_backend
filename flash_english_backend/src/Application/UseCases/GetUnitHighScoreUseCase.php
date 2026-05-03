@@ -16,7 +16,7 @@ class GetUnitHighScoreUseCase
 
 	public function get(string $userId, array $data): ?array
 	{
-		foreach (["category_id", "unit_id"] as $key) {
+		foreach (["category_no", "unit_no"] as $key) {
 			if (!array_key_exists($key, $data)) {
 				throw new \InvalidArgumentException("Missing required field: {$key}");
 			}
@@ -24,19 +24,19 @@ class GetUnitHighScoreUseCase
 
 		return $this->repo->getHighScoreInfo(
 			$userId,
-			(int)$data["category_id"],
-			(int)$data["unit_id"],
+			(int)$data["category_no"],
+			(int)$data["unit_no"],
 		);
 	}
 
 	public function getAll(string $userId, array $data): array
 	{
-		if (!array_key_exists("category_id", $data)) {
-			throw new \InvalidArgumentException("Missing required field: category_id");
+		if (!array_key_exists("category_no", $data)) {
+			throw new \InvalidArgumentException("Missing required field: category_no");
 		}
 		return $this->repo->getAllHighScoreInfo(
 			$userId,
-			(int)$data["category_id"],
+			(int)$data["category_no"],
 		);
 	}
 }
