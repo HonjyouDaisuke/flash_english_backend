@@ -1,9 +1,9 @@
 INSERT INTO study_logs 
 (
   user_id,
-  category_id,
-  unit_id,
-  question_id,
+  category_no,
+  unit_no,
+  question_no,
   is_correct,
   session_id,
   duration_seconds
@@ -11,9 +11,9 @@ INSERT INTO study_logs
 VALUES 
 (
   :user_id,
-  :category_id,
-  :unit_id,
-  :question_id,
+  :category_no,
+  :unit_no,
+  :question_no,
   :is_correct,
   :session_id,
   :duration_seconds

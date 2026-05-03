@@ -16,7 +16,7 @@ class SaveUnitHighScoreUseCase
 
 	public function execute(string $userId, array $data): void
 	{
-		foreach (["category_id", "unit_id", "score", "achieved_at"] as $key) {
+		foreach (["category_no", "unit_no", "score", "achieved_at"] as $key) {
 			if (!array_key_exists($key, $data)) {
 				throw new \InvalidArgumentException("Missing required field: {$key}");
 			}
@@ -24,8 +24,8 @@ class SaveUnitHighScoreUseCase
 		logger()->debug('DB access start');
 		$this->repo->save(
 			$userId,
-			(int)$data["category_id"],
-			(int)$data["unit_id"],
+			(int)$data["category_no"],
+			(int)$data["unit_no"],
 			(int)$data["score"],
 			(string)$data["achieved_at"],
 		);

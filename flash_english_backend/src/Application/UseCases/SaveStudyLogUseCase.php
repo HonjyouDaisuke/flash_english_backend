@@ -18,9 +18,9 @@ class SaveStudyLogUseCase
 	{
 		$this->repo->save(
 			$userId,
-			$data["category_id"],
-			$data["unit_id"],
-			$data["question_id"],
+			$data["category_no"],
+			$data["unit_no"],
+			$data["question_no"],
 			$data["is_correct"],
 			$data["session_id"],
 			$data["duration_seconds"],
