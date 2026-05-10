@@ -8,11 +8,13 @@ use App\Config\Database;
 use App\Controllers\AuthController;
 use App\Controllers\StudyLogController;
 use App\Controllers\UnitHighScoresController;
+use App\Controllers\PingContoroller;
 use App\Repositories\UserRepository;
 use App\Repositories\UnitHighScoreRepository;
 use App\Application\UseCases\GoogleLoginUseCase;
 use App\Application\UseCases\SaveStudyLogUseCase;
 use App\Application\UseCases\SaveUnitHighScoreUseCase;
+use App\Controllers\PingController;
 use App\Repositories\StudyLogRepository;
 use App\Middleware\AuthMiddleware;
 
@@ -36,10 +38,13 @@ $unitHighScoreRepo = new UnitHighScoreRepository($db);
 $authController = new AuthController(new GoogleLoginUseCase($userRepo));
 $studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo));
 $unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo), new GetUnitHighScoreUseCase($unitHighScoreRepo));
-
+$pingController = new PingController();
 // ルーティング
 $routes = [
 	// 認証不要
+	// ping(接続確認)
+	"POST /api/ping" => fn() => $pingController->ping(),
+	// googleログイン
 	"POST /api/auth/google" => fn() => $authController->google(),
 
 	// 認証必要
