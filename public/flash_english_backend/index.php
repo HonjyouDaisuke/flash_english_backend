@@ -8,7 +8,6 @@ use App\Config\Database;
 use App\Controllers\AuthController;
 use App\Controllers\StudyLogController;
 use App\Controllers\UnitHighScoresController;
-use App\Controllers\PingContoroller;
 use App\Repositories\UserRepository;
 use App\Repositories\UnitHighScoreRepository;
 use App\Application\UseCases\GoogleLoginUseCase;

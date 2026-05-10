@@ -4,8 +4,6 @@ namespace App\Controllers;
 
 class PingController
 {
-	private string $logFile = __DIR__ . "/../../public/debug.log";
-
 	public function ping(): void
 	{
 		try {
@@ -15,7 +13,7 @@ class PingController
 				"server_time" => date("c"),
 			]);
 		} catch (\Throwable $e) {
-			http_response_code(401);
+			http_response_code(500);
 			echo json_encode([
 				"status" => "ping error",
 			]);
