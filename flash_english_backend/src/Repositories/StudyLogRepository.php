@@ -21,12 +21,19 @@ class StudyLogRepository
 		bool $isCorrect,
 		int $sessionId,
 		int $durationSeconds,
+		?string $createdAt = null,
 	): bool {
 		$sql = file_get_contents(__DIR__ . "/sql/insert_study_logs.sql");
 		$stmt = $this->pdo->prepare($sql);
 		if (!$stmt) {
 			return false;
 		}
+
+		if ($createdAt !== null) {
+			$createdAt = (new \DateTime($createdAt))
+				->format('Y-m-d H:i:s');
+		}
+
 		$result = $stmt->execute([
 			":user_id" => $userId,
 			":category_no" => $categoryNo,
@@ -35,6 +42,7 @@ class StudyLogRepository
 			":is_correct" => $isCorrect ? 1 : 0,
 			":session_id" => $sessionId,
 			":duration_seconds" => $durationSeconds,
+			":created_at" => $createdAt ?? date("Y-m-d H:i:s"),
 		]);
 
 		return $result;

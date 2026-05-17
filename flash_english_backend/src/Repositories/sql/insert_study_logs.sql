@@ -6,7 +6,8 @@ INSERT INTO study_logs
   question_no,
   is_correct,
   session_id,
-  duration_seconds
+  duration_seconds,
+  created_at
 ) 
 VALUES 
 (
@@ -16,5 +17,6 @@ VALUES
   :question_no,
   :is_correct,
   :session_id,
-  :duration_seconds
+  :duration_seconds,
+  :created_at
 );
