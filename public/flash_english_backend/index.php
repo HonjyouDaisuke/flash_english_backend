@@ -13,7 +13,9 @@ use App\Repositories\UnitHighScoreRepository;
 use App\Application\UseCases\GoogleLoginUseCase;
 use App\Application\UseCases\SaveStudyLogUseCase;
 use App\Application\UseCases\SaveUnitHighScoreUseCase;
+use App\Application\UseCases\SyncUseCase;
 use App\Controllers\PingController;
+use App\Controllers\SyncController;
 use App\Repositories\StudyLogRepository;
 use App\Middleware\AuthMiddleware;
 
@@ -38,6 +40,7 @@ $authController = new AuthController(new GoogleLoginUseCase($userRepo));
 $studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo));
 $unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo), new GetUnitHighScoreUseCase($unitHighScoreRepo));
 $pingController = new PingController();
+$syncController = new SyncController(new SyncUseCase($studyLogRepo, $unitHighScoreRepo, $db));
 // ルーティング
 $routes = [
 	// 認証不要
@@ -47,6 +50,11 @@ $routes = [
 	"POST /api/auth/google" => fn() => $authController->google(),
 
 	// 認証必要
+	"POST /api/sync" => function () use ($syncController) {
+		$userId = AuthMiddleware::handle();
+		$syncController->sync($userId);
+	},
+
 	"POST /api/study-log" => function () use ($studyLogController) {
 		$userId = AuthMiddleware::handle();
 		$studyLogController->save($userId);

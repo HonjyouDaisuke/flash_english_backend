@@ -6,6 +6,13 @@ use PDO;
 
 class Database
 {
+	private PDO $pdo;
+
+	public function __construct()
+	{
+		$this->pdo = self::connect();
+	}
+
 	public static function connect(): PDO
 	{
 		$dsn = sprintf(
@@ -27,5 +34,20 @@ class Database
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		return $pdo;
+	}
+
+	public function beginTransaction(): bool
+	{
+		return $this->pdo->beginTransaction();
+	}
+
+	public function commit(): bool
+	{
+		return $this->pdo->commit();
+	}
+
+	public function rollBack(): bool
+	{
+		return $this->pdo->rollBack();
 	}
 }
