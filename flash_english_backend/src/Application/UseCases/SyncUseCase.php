@@ -34,8 +34,8 @@ class SyncUseCase
 				$payload = $event["payload"];
 				switch ($event["type"]) {
 					case "study_log":
-						logger()->debug('Processing study_log event', ['event' => $event]);
-						$this->studyLogRepository->save(
+						logger()->debug('Processing study_log event: ' . $event["event_id"]);
+						$ok = $this->studyLogRepository->save(
 							$userId,
 							$payload["category_no"],
 							$payload["unit_no"],
@@ -45,16 +45,23 @@ class SyncUseCase
 							$payload["duration_seconds"],
 							$payload["created_at"] ?? null,
 						);
+						if (!$ok) {
+							throw new \Exception("Failed to save study log");
+						}
 						break;
 
 					case "unit_score":
-						$this->unitScoreRepository->save(
+						logger()->debug('Processing unit_score event: ' . $event["event_id"]);
+						$ok = $this->unitScoreRepository->save(
 							$userId,
 							$payload["category_no"],
 							$payload["unit_no"],
 							$payload["high_score"],
 							$payload["achieved_at"],
 						);
+						if (!$ok) {
+							throw new \Exception("Failed to save unit score");
+						}
 						break;
 					default:
 
@@ -72,7 +79,9 @@ class SyncUseCase
 			return $processedIds;
 		} catch (Throwable $e) {
 
-			$this->db->rollBack();
+			if ($this->db->inTransaction()) {
+				$this->db->rollBack();
+			}
 
 			throw $e;
 		}

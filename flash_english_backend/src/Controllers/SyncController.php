@@ -20,10 +20,10 @@ class SyncController
 
 		logger()->debug(
 			'Received sync request',
-			['userId' => $userId, 'count' => $input]
+			['userId' => $userId, 'count' => count($input["userId"] ?? [])]
 		);
 
-		if (!$input) {
+		if ($input === null && json_last_error() !== JSON_ERROR_NONE) {
 			http_response_code(400);
 			echo json_encode([
 				"error" => "Invalid JSON"
@@ -31,20 +31,15 @@ class SyncController
 			return;
 		}
 
-		if (!isset($input["events"])) {
+		if (!isset($input["events"]) || !is_array($input["events"])) {
 			http_response_code(400);
 			echo json_encode([
-				"error" => "events required"
+				"error" => "events array required"
 			]);
 			return;
 		}
-		logger()->debug('-------------');
-		if (!$input) {
-			http_response_code(400);
-			echo json_encode(["error" => "Invalid JSON"]);
-			return;
-		}
-		logger()->debug('Start sync process...', ['input' => $input]);
+
+		logger()->debug('Start sync process...', ['input' => $input["userId"]]);
 		try {
 			$result = $this->useCase->execute(
 				$userId,
@@ -56,7 +51,7 @@ class SyncController
 			]);
 		} catch (\Exception $e) {
 			http_response_code(400);
-			echo json_encode(["error" => $e->getMessage()]);
+			echo json_encode(["error" => "internal server error"]);
 		}
 	}
 }
