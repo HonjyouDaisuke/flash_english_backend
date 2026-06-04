@@ -27,4 +27,30 @@ class UserSettingsRepository
 		]);
 		return $result;
 	}
+
+	public function findByKey(string $userId, string $settingKey,): ?array
+	{
+		$sql = file_get_contents(__DIR__ . "/sql/select_setting_by_key.sql");
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([
+			':user_id' => $userId,
+			':setting_key' => $settingKey,
+		]);
+
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		return $row ?: null;
+	}
+
+	public function findAll(string $userId,): ?array
+	{
+		$sql = file_get_contents(__DIR__ . "/sql/select_all_settings.sql");
+		$stmt = $this->pdo->prepare($sql);
+
+		$stmt->execute([
+			':user_id' => $userId,
+		]);
+
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 }

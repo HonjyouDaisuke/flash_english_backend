@@ -13,10 +13,13 @@ use App\Repositories\UnitHighScoreRepository;
 use App\Application\UseCases\GoogleLoginUseCase;
 use App\Application\UseCases\SaveStudyLogUseCase;
 use App\Application\UseCases\SaveUnitHighScoreUseCase;
+use App\Application\UseCases\GetUserSettingUseCase;
+use App\Application\UseCases\GetUserSettingsUseCase;
 use App\Repositories\UserSettingsRepository;
 use App\Application\UseCases\SyncUseCase;
 use App\Controllers\PingController;
 use App\Controllers\SyncController;
+use App\Controllers\UserSettingsController;
 use App\Repositories\StudyLogRepository;
 use App\Middleware\AuthMiddleware;
 
@@ -41,6 +44,7 @@ $userSettingsRepo = new UserSettingsRepository($db);
 $authController = new AuthController(new GoogleLoginUseCase($userRepo));
 $studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo));
 $unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo), new GetUnitHighScoreUseCase($unitHighScoreRepo));
+$userSettingsController = new UserSettingsController(new GetUserSettingUseCase($userSettingsRepo), new GetUserSettingsUseCase($userSettingsRepo));
 $pingController = new PingController();
 $syncController = new SyncController(new SyncUseCase($studyLogRepo, $unitHighScoreRepo, $userSettingsRepo, $db));
 // ルーティング
@@ -68,10 +72,15 @@ $routes = [
 	},
 
 	"POST /api/getall-unit-high-scores" => function () use ($unitHighScoresController) {
-		logger()->debug('get userId');
 		$userId = AuthMiddleware::handle();
-		logger()->debug('got userId = ' . $userId);
+		logger()->debug('getAll Unit High Scores userId = ' . $userId);
 		$unitHighScoresController->getAll($userId);
+	},
+
+	"POST /api/getall-user-settings" => function () use ($userSettingsController) {
+		$userId = AuthMiddleware::handle();
+		logger()->debug('getAll User Settings userId = ' . $userId);
+		$userSettingsController->getAll($userId);
 	},
 ];
 
