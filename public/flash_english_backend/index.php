@@ -13,6 +13,7 @@ use App\Repositories\UnitHighScoreRepository;
 use App\Application\UseCases\GoogleLoginUseCase;
 use App\Application\UseCases\SaveStudyLogUseCase;
 use App\Application\UseCases\SaveUnitHighScoreUseCase;
+use App\Repositories\UserSettingsRepository;
 use App\Application\UseCases\SyncUseCase;
 use App\Controllers\PingController;
 use App\Controllers\SyncController;
@@ -34,13 +35,14 @@ $db = Database::connect();
 $userRepo = new UserRepository($db);
 $studyLogRepo = new StudyLogRepository($db);
 $unitHighScoreRepo = new UnitHighScoreRepository($db);
+$userSettingsRepo = new UserSettingsRepository($db);
 
 // Contorller
 $authController = new AuthController(new GoogleLoginUseCase($userRepo));
 $studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo));
 $unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo), new GetUnitHighScoreUseCase($unitHighScoreRepo));
 $pingController = new PingController();
-$syncController = new SyncController(new SyncUseCase($studyLogRepo, $unitHighScoreRepo, $db));
+$syncController = new SyncController(new SyncUseCase($studyLogRepo, $unitHighScoreRepo, $userSettingsRepo, $db));
 // ルーティング
 $routes = [
 	// 認証不要

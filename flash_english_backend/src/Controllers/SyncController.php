@@ -20,7 +20,7 @@ class SyncController
 
 		logger()->debug(
 			'Received sync request',
-			['userId' => $userId, 'count' => count($input["userId"] ?? [])]
+			['userId' => $userId, 'count' => count($input["events"] ?? [])]
 		);
 
 		if ($input === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -39,7 +39,7 @@ class SyncController
 			return;
 		}
 
-		logger()->debug('Start sync process...', ['input' => $input["userId"]]);
+		logger()->debug('Start sync process...', ['input' => $input["events"]]);
 		try {
 			$result = $this->useCase->execute(
 				$userId,

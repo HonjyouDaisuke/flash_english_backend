@@ -6,6 +6,7 @@ use PDO;
 use App\Config\Database;
 use App\Repositories\StudyLogRepository;
 use App\Repositories\UnitHighScoreRepository;
+use App\Repositories\UserSettingsRepository;
 use Throwable;
 
 class SyncUseCase
@@ -13,6 +14,7 @@ class SyncUseCase
 	public function __construct(
 		private StudyLogRepository $studyLogRepository,
 		private UnitHighScoreRepository $unitScoreRepository,
+		private UserSettingsRepository $userSettingsRepository,
 		private PDO $db,
 	) {}
 
@@ -63,10 +65,22 @@ class SyncUseCase
 							throw new \Exception("Failed to save unit score");
 						}
 						break;
-					default:
 
+					case "user_setting":
+						logger()->debug('Processing user_settings event: ' . $event["event_id"]);
+						$ok = $this->userSettingsRepository->save(
+							$userId,
+							$payload["setting_key"],
+							$payload["value"],
+						);
+						if (!$ok) {
+							throw new \Exception("Failed to save user settings");
+						}
+						break;
+
+					default:
 						throw new \Exception(
-							"Unknown event type"
+							"Unknown event type" . $event["type"]
 						);
 				}
 
