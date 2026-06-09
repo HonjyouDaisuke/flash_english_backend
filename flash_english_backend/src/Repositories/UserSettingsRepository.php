@@ -59,9 +59,18 @@ class UserSettingsRepository
 	public function findAll(string $userId,): array
 	{
 		$sql = file_get_contents(__DIR__ . "/sql/select_all_settings.sql");
+		$sql = file_get_contents(__DIR__ . "/sql/select_all_settings.sql");
+		if ($sql === false) {
+			return [];
+		}
 		$stmt = $this->pdo->prepare($sql);
+		if (!$stmt) {
+			return [];
+		}
 
 		$stmt->execute([
+			':user_id' => $userId,
+		]);
 			':user_id' => $userId,
 		]);
 
