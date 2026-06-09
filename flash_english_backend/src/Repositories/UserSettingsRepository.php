@@ -35,8 +35,18 @@ class UserSettingsRepository
 	public function findByKey(string $userId, string $settingKey,): ?array
 	{
 		$sql = file_get_contents(__DIR__ . "/sql/select_setting_by_key.sql");
+		$sql = file_get_contents(__DIR__ . "/sql/select_setting_by_key.sql");
+		if ($sql === false) {
+			return null;
+		}
 		$stmt = $this->pdo->prepare($sql);
+		if (!$stmt) {
+			return null;
+		}
 		$stmt->execute([
+			':user_id' => $userId,
+			':setting_key' => $settingKey,
+		]);
 			':user_id' => $userId,
 			':setting_key' => $settingKey,
 		]);
