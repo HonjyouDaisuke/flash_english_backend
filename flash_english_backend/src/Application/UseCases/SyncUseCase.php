@@ -80,7 +80,7 @@ class SyncUseCase
 
 					default:
 						throw new \Exception(
-							"Unknown event type" . $event["type"]
+							"Unknown event type: " . $event["type"]
 						);
 				}
 

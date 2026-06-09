@@ -82,6 +82,12 @@ $routes = [
 		logger()->debug('getAll User Settings userId = ' . $userId);
 		$userSettingsController->getAll($userId);
 	},
+
+	"POST /api/get-user-settings" => function () use ($userSettingsController) {
+		$userId = AuthMiddleware::handle();
+		logger()->debug('get User Settings userId = ' . $userId);
+		$userSettingsController->get($userId, $_POST['settingKey']);
+	},
 ];
 
 $key = "$method $uri";

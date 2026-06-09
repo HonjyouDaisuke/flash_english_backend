@@ -42,7 +42,7 @@ class UserSettingsRepository
 		return $row ?: null;
 	}
 
-	public function findAll(string $userId,): ?array
+	public function findAll(string $userId,): array
 	{
 		$sql = file_get_contents(__DIR__ . "/sql/select_all_settings.sql");
 		$stmt = $this->pdo->prepare($sql);

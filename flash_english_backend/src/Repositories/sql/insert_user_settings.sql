@@ -13,3 +13,4 @@ VALUES (
 ON DUPLICATE KEY UPDATE
     value = VALUES(value),
     updated_at = NOW();
+    

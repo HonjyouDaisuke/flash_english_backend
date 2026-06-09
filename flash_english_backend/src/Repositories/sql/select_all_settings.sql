@@ -4,4 +4,4 @@ SELECT
     updated_at
 FROM user_settings
 WHERE user_id = :user_id
-ORDER BY setting_key
+ORDER BY setting_key;
