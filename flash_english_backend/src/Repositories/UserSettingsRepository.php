@@ -15,6 +15,10 @@ class UserSettingsRepository
 	public function save(string $userId, string $settingKey, string $value,): bool
 	{
 		$sql = file_get_contents(__DIR__ . "/sql/insert_user_settings.sql");
+		if ($sql === false) {
+			logger()->error("Failed to load SQL: insert_user_settings.sql");
+			return false;
+		}
 		logger()->debug("Saving user setting userId=" . $userId . " key=" . $settingKey);
 		$stmt = $this->pdo->prepare($sql);
 		if (!$stmt) {
