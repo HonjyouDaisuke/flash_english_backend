@@ -66,20 +66,20 @@ class SyncUseCase
 						}
 						break;
 
-case "user_setting":
-	logger()->debug('Processing user_settings event: ' . $event["event_id"]);
-	if (!isset($payload["setting_key"]) || !isset($payload["value"])) {
-		throw new \Exception("Missing required fields: setting_key or value");
-	}
-	$ok = $this->userSettingsRepository->save(
-		$userId,
-		$payload["setting_key"],
-		$payload["value"],
-	);
-	if (!$ok) {
-		throw new \Exception("Failed to save user settings");
-	}
-	break;
+					case "user_setting":
+						logger()->debug('Processing user_settings event: ' . $event["event_id"]);
+						if (!isset($payload["setting_key"]) || !isset($payload["value"])) {
+							throw new \Exception("Missing required fields: setting_key or value");
+						}
+						$ok = $this->userSettingsRepository->save(
+							$userId,
+							$payload["setting_key"],
+							$payload["value"],
+						);
+						if (!$ok) {
+							throw new \Exception("Failed to save user settings");
+						}
+						break;
 
 					default:
 						throw new \Exception(
@@ -104,12 +104,10 @@ case "user_setting":
 		}
 	}
 
-
 	private function validateUser(
 		string $jwtUserId,
 		array $event
 	): void {
-
 		if (
 			$event["user_id"] !== $jwtUserId
 		) {

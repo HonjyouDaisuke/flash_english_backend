@@ -86,7 +86,16 @@ $routes = [
 	"POST /api/get-user-settings" => function () use ($userSettingsController) {
 		$userId = AuthMiddleware::handle();
 		logger()->debug('get User Settings userId = ' . $userId);
-		$userSettingsController->get($userId, $_POST['settingKey']);
+		$raw = json_decode(file_get_contents("php://input"), true);
+		$settingKey = $raw['settingKey'] ?? $_POST['settingKey'] ?? null;
+
+		if (!is_string($settingKey) || trim($settingKey) === '') {
+			http_response_code(400);
+			echo json_encode(["error" => "settingKey is required"]);
+			return;
+		}
+
+		$userSettingsController->get($userId, $settingKey);
 	},
 ];
 

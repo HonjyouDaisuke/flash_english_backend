@@ -47,9 +47,6 @@ class UserSettingsRepository
 			':user_id' => $userId,
 			':setting_key' => $settingKey,
 		]);
-			':user_id' => $userId,
-			':setting_key' => $settingKey,
-		]);
 
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -69,8 +66,6 @@ class UserSettingsRepository
 		}
 
 		$stmt->execute([
-			':user_id' => $userId,
-		]);
 			':user_id' => $userId,
 		]);
 
