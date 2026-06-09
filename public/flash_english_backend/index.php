@@ -13,9 +13,13 @@ use App\Repositories\UnitHighScoreRepository;
 use App\Application\UseCases\GoogleLoginUseCase;
 use App\Application\UseCases\SaveStudyLogUseCase;
 use App\Application\UseCases\SaveUnitHighScoreUseCase;
+use App\Application\UseCases\GetUserSettingUseCase;
+use App\Application\UseCases\GetUserSettingsUseCase;
+use App\Repositories\UserSettingsRepository;
 use App\Application\UseCases\SyncUseCase;
 use App\Controllers\PingController;
 use App\Controllers\SyncController;
+use App\Controllers\UserSettingsController;
 use App\Repositories\StudyLogRepository;
 use App\Middleware\AuthMiddleware;
 
@@ -34,13 +38,15 @@ $db = Database::connect();
 $userRepo = new UserRepository($db);
 $studyLogRepo = new StudyLogRepository($db);
 $unitHighScoreRepo = new UnitHighScoreRepository($db);
+$userSettingsRepo = new UserSettingsRepository($db);
 
 // Contorller
 $authController = new AuthController(new GoogleLoginUseCase($userRepo));
 $studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo));
 $unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo), new GetUnitHighScoreUseCase($unitHighScoreRepo));
+$userSettingsController = new UserSettingsController(new GetUserSettingUseCase($userSettingsRepo), new GetUserSettingsUseCase($userSettingsRepo));
 $pingController = new PingController();
-$syncController = new SyncController(new SyncUseCase($studyLogRepo, $unitHighScoreRepo, $db));
+$syncController = new SyncController(new SyncUseCase($studyLogRepo, $unitHighScoreRepo, $userSettingsRepo, $db));
 // ルーティング
 $routes = [
 	// 認証不要
@@ -66,10 +72,30 @@ $routes = [
 	},
 
 	"POST /api/getall-unit-high-scores" => function () use ($unitHighScoresController) {
-		logger()->debug('get userId');
 		$userId = AuthMiddleware::handle();
-		logger()->debug('got userId = ' . $userId);
+		logger()->debug('getAll Unit High Scores userId = ' . $userId);
 		$unitHighScoresController->getAll($userId);
+	},
+
+	"POST /api/getall-user-settings" => function () use ($userSettingsController) {
+		$userId = AuthMiddleware::handle();
+		logger()->debug('getAll User Settings userId = ' . $userId);
+		$userSettingsController->getAll($userId);
+	},
+
+	"POST /api/get-user-settings" => function () use ($userSettingsController) {
+		$userId = AuthMiddleware::handle();
+		logger()->debug('get User Settings userId = ' . $userId);
+		$raw = json_decode(file_get_contents("php://input"), true);
+		$settingKey = $raw['settingKey'] ?? $_POST['settingKey'] ?? null;
+
+		if (!is_string($settingKey) || trim($settingKey) === '') {
+			http_response_code(400);
+			echo json_encode(["error" => "settingKey is required"]);
+			return;
+		}
+
+		$userSettingsController->get($userId, $settingKey);
 	},
 ];
 
