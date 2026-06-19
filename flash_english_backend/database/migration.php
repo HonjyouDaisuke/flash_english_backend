@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../bootstrap/app.php';
 require_once BASE_PATH . '/bootstrap/logger.php';
 require_once BASE_PATH . '/vendor/autoload.php';
+require_once __DIR__ . '/questions_seed.php';
 
 // ==============================
 // 1. PDO接続
@@ -55,5 +56,5 @@ runSqlFiles($pdo, __DIR__ . '/migrations');
 // ==============================
 echo "== Run Seeds ==\n";
 runSqlFiles($pdo, __DIR__ . '/seeds');
-
+runQuestionsSeed($pdo);
 echo "✅ Done!\n";
