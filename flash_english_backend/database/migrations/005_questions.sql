@@ -5,7 +5,8 @@ CREATE TABLE questions (
     category_no INTEGER NOT NULL,
     unit_no INTEGER NOT NULL,
     question_no INTEGER NOT NULL,
-
+    UNIQUE(category_no, unit_no, question_no),
+    
     japanese TEXT NOT NULL,
     english TEXT NOT NULL,
 
@@ -13,5 +14,5 @@ CREATE TABLE questions (
     english_audio_path TEXT,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
