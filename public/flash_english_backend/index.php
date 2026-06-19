@@ -20,6 +20,7 @@ use App\Application\UseCases\SyncUseCase;
 use App\Controllers\PingController;
 use App\Controllers\SyncController;
 use App\Controllers\UserSettingsController;
+use App\Controllers\AudioController;
 use App\Repositories\StudyLogRepository;
 use App\Middleware\AuthMiddleware;
 
@@ -47,6 +48,8 @@ $unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUs
 $userSettingsController = new UserSettingsController(new GetUserSettingUseCase($userSettingsRepo), new GetUserSettingsUseCase($userSettingsRepo));
 $pingController = new PingController();
 $syncController = new SyncController(new SyncUseCase($studyLogRepo, $unitHighScoreRepo, $userSettingsRepo, $db));
+$audioController = new AudioController();
+
 // ルーティング
 $routes = [
 	// 認証不要
@@ -96,6 +99,29 @@ $routes = [
 		}
 
 		$userSettingsController->get($userId, $settingKey);
+	},
+
+	// 音声ファイルダウンロード
+	"POST /api/download-audio" => function () use ($audioController) {
+		$userId = AuthMiddleware::handle();
+		$raw = json_decode(
+			file_get_contents("php://input"),
+			true
+		);
+
+		$categoryId = (int)($raw['categoryId'] ?? 0);
+		$unitId = (int)($raw['unitId'] ?? 0);
+
+		if ($categoryId <= 0 || $unitId <= 0) {
+			http_response_code(400);
+			echo json_encode(["error" => "categoryId and unitId are required"]);
+			return;
+		}
+
+		$audioController->download(
+			$categoryId,
+			$unitId
+		);
 	},
 ];
 
