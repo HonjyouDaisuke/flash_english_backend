@@ -1,0 +1,20 @@
+[
+    {
+        "category_id": 1,
+        "category_no": 1,
+        "category_name": "Part1 中学1年レベル",
+        "category_description": "レベル1(中学1年生)"
+    },
+    {
+        "category_id": 2,
+        "category_no": 2,
+        "category_name": "Part2 中学2年レベル",
+        "category_description": "レベル2(中学2年生)"
+    },
+    {
+        "category_id": 3,
+        "category_no": 3,
+        "category_name": "Part3 中学3年レベル",
+        "category_description": "レベル3(中学3年生)"
+    }
+]
