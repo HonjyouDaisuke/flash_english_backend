@@ -10,6 +10,22 @@ function runUnitsSeed(PDO $pdo)
 	echo "== Run Units Seed count=" . count($json) . " ==\n";
 	$pdo->beginTransaction();
 	try {
+		$stmt = $pdo->prepare("
+      INSERT INTO units (
+        unit_id,
+        category_no,
+		    unit_no,
+        unit_name,
+        unit_description
+      )
+      VALUES (
+        :unit_id,
+        :category_no,
+        :unit_no,
+        :unit_name,
+        :unit_description
+  	  )
+    ");
 		foreach ($json as $index => $unit) {
 			if (
 				!isset($unit['unit_id']) ||
@@ -24,22 +40,7 @@ function runUnitsSeed(PDO $pdo)
 				$pdo->rollBack();
 				exit;
 			}
-			$stmt = $pdo->prepare("
-        INSERT INTO units (
-            unit_id,
-            category_no,
-            unit_no,
-            unit_name,
-            unit_description
-        )
-        VALUES (
-            :unit_id,
-            :category_no,
-            :unit_no,
-            :unit_name,
-            :unit_description
-        )
-    ");
+
 
 			$stmt->execute([
 				':unit_id' => $unit['unit_id'],

@@ -10,6 +10,20 @@ function runCategoriesSeed(PDO $pdo)
 	echo "== Run Categories Seed count=" . count($json) . " ==\n";
 	$pdo->beginTransaction();
 	try {
+		$stmt = $pdo->prepare("
+      INSERT INTO categories (
+        category_id,
+        category_no,
+        category_name,
+        category_description
+      )
+      VALUES (
+        :category_id,
+        :category_no,
+        :category_name,
+        :category_description
+      )
+    ");
 		foreach ($json as $index => $category) {
 			if (
 				!isset($category['category_id']) ||
@@ -23,20 +37,6 @@ function runCategoriesSeed(PDO $pdo)
 				$pdo->rollBack();
 				exit;
 			}
-			$stmt = $pdo->prepare("
-        INSERT INTO categories (
-            category_id,
-            category_no,
-            category_name,
-            category_description
-        )
-        VALUES (
-            :category_id,
-            :category_no,
-            :category_name,
-            :category_description
-        )
-    ");
 
 			$stmt->execute([
 				':category_id' => $category['category_id'],
