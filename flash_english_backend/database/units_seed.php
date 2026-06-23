@@ -35,10 +35,9 @@ function runUnitsSeed(PDO $pdo)
 				!isset($unit['unit_name']) ||
 				!isset($unit['unit_description'])
 			) {
-				echo "Broken record at index {$index}: missing required fields\n";
-				var_dump($unit);
-				$pdo->rollBack();
-				exit;
+				throw new RuntimeException(
+					"Broken unit record at index {$index}: missing required fields"
+				);
 			}
 
 
