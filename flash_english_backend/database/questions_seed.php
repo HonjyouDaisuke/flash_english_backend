@@ -10,6 +10,28 @@ function runQuestionsSeed(PDO $pdo)
 	echo "== Run Questions Seed count=" . count($json) . " ==\n";
 	$pdo->beginTransaction();
 	try {
+		$stmt = $pdo->prepare("
+      INSERT INTO questions (
+        question_id,
+        category_no,
+        unit_no,
+        question_no,
+        japanese,
+        english,
+        japanese_audio_path,
+        english_audio_path
+      )
+      VALUES (
+        :question_id,
+        :category_no,
+        :unit_no,
+        :question_no,
+        :japanese,
+        :english,
+        :japanese_audio_path,
+        :english_audio_path
+      )
+    ");
 		foreach ($json as $index => $question) {
 			if (
 				!isset($question['question_id']) ||
@@ -25,29 +47,6 @@ function runQuestionsSeed(PDO $pdo)
 				$pdo->rollBack();
 				exit;
 			}
-			$stmt = $pdo->prepare("
-        INSERT INTO questions (
-            question_id,
-            category_no,
-            unit_no,
-            question_no,
-            japanese,
-            english,
-            japanese_audio_path,
-            english_audio_path
-        )
-        VALUES (
-            :question_id,
-            :category_no,
-            :unit_no,
-            :question_no,
-            :japanese,
-            :english,
-            :japanese_audio_path,
-            :english_audio_path
-        )
-    ");
-
 			$stmt->execute([
 				':question_id' => $question['question_id'],
 				':category_no' => $question['category_no'],
