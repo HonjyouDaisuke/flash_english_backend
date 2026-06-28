@@ -11,7 +11,7 @@ function runCategoriesSeed(PDO $pdo)
 	$pdo->beginTransaction();
 	try {
 		$stmt = $pdo->prepare("
-      INSERT INTO categories (
+      REPLACE INTO categories (
         category_id,
         category_no,
         category_name,

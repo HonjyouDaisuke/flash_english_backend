@@ -39,26 +39,8 @@ function runSqlFiles(PDO $pdo, string $dir)
 	}
 }
 
-// ==============================
-// 3. DB作成
-// ==============================
-// echo "== Create Database ==\n";
-// runSqlFiles($pdo, __DIR__ . '/create_db');
-
-// DB選択（ハイフン対策）
-// $pdo->exec("USE `$dbname`");
-
-// ==============================
-// 4. Migration
-// ==============================
-echo "== Run Migrations ==\n";
-runSqlFiles($pdo, __DIR__ . '/migrations');
-
-// ==============================
-// 5. Seeds
-// ==============================
-echo "== Run Seeds ==\n";
-runSqlFiles($pdo, __DIR__ . '/seeds');
+// 問題文のアップデート
+echo "== Run update Master Questions ==\n";
 runQuestionsSeed($pdo);
 runCategoriesSeed($pdo);
 runUnitsSeed($pdo);

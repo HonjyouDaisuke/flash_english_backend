@@ -1,0 +1,20 @@
+[
+    {
+        "version_id": 1,
+        "version_no": "0.5.0",
+        "version_name": "category",
+        "version_description": "カテゴリーバージョン"
+    },
+    {
+        "version_id": 2,
+        "version_no": "0.5.0",
+        "version_name": "unit",
+        "version_description": "ユニットバージョン"
+    },
+    {
+        "version_id": 3,
+        "version_no": "0.5.0",
+        "version_name": "question",
+        "version_description": "問題バージョン"
+    }
+]

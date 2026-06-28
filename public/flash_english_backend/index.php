@@ -16,13 +16,26 @@ use App\Application\UseCases\SaveUnitHighScoreUseCase;
 use App\Application\UseCases\GetUserSettingUseCase;
 use App\Application\UseCases\GetUserSettingsUseCase;
 use App\Repositories\UserSettingsRepository;
+use App\Repositories\CategoriesRepository;
+use App\Controllers\CategoriesController;
 use App\Application\UseCases\SyncUseCase;
 use App\Controllers\PingController;
 use App\Controllers\SyncController;
 use App\Controllers\UserSettingsController;
 use App\Controllers\AudioController;
 use App\Repositories\StudyLogRepository;
+use App\Controllers\MasterVersionController;
+use App\Application\UseCases\CheckMasterVersionUseCase;
+use App\Application\UseCases\GetAllCategoriesUseCase;
+use App\Repositories\MasterVersionRepository;
 use App\Middleware\AuthMiddleware;
+use App\Controllers\UnitsController;
+use App\Application\UseCases\GetAllUnitsUseCase;
+use App\Repositories\UnitsRepository;
+use App\Controllers\QuestionsController;
+use App\Application\UseCases\GetAllQuestionsUseCase;
+use App\Application\UseCases\GetMasterVersionInfoUseCase;
+use App\Repositories\QuestionsRepository;
 
 header("Content-Type: application/json");
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
@@ -40,6 +53,9 @@ $userRepo = new UserRepository($db);
 $studyLogRepo = new StudyLogRepository($db);
 $unitHighScoreRepo = new UnitHighScoreRepository($db);
 $userSettingsRepo = new UserSettingsRepository($db);
+$categoriesRepo = new CategoriesRepository($db);
+$unitsRepo = new UnitsRepository($db);
+$questionsRepo = new QuestionsRepository($db);
 
 // Contorller
 $authController = new AuthController(new GoogleLoginUseCase($userRepo));
@@ -49,6 +65,10 @@ $userSettingsController = new UserSettingsController(new GetUserSettingUseCase($
 $pingController = new PingController();
 $syncController = new SyncController(new SyncUseCase($studyLogRepo, $unitHighScoreRepo, $userSettingsRepo, $db));
 $audioController = new AudioController();
+$categoriesController = new CategoriesController(new GetAllCategoriesUseCase($categoriesRepo));
+$unitsController = new UnitsController(new GetAllUnitsUseCase($unitsRepo));
+$questionsController = new QuestionsController(new GetAllQuestionsUseCase($questionsRepo));
+$masterVersionController = new MasterVersionController(new CheckMasterVersionUseCase(new MasterVersionRepository($db)), new GetMasterVersionInfoUseCase(new MasterVersionRepository($db)));
 
 // ルーティング
 $routes = [
@@ -58,6 +78,46 @@ $routes = [
 	// googleログイン
 	"POST /api/auth/google" => fn() => $authController->google(),
 
+	"POST /api/check-master-version" => function () use ($masterVersionController) {
+		$raw = json_decode(file_get_contents("php://input"), true);
+
+		$versionName = $raw['version_name'] ?? null;
+		$currentVersion = isset($raw['current_version'])
+			? (string)$raw['current_version']
+			: null;
+
+		if (!is_string($versionName) || trim($versionName) === '') {
+			http_response_code(400);
+			echo json_encode(["error" => "versionName is required"]);
+			return;
+		}
+
+		if ($currentVersion === null || trim($currentVersion) === '') {
+			http_response_code(400);
+			echo json_encode(["error" => "currentVersion is required"]);
+			return;
+		}
+		logger()->debug("client currentVersion = $currentVersion");
+		$masterVersionController->IsNeedMasterUpdate($versionName, $currentVersion);
+	},
+	"POST /api/get-master-version" => function () use ($masterVersionController) {
+		$raw = json_decode(file_get_contents("php://input"), true);
+
+		$versionName = $raw['version_name'] ?? null;
+		$masterVersionController->GetMasterVersionInfo($versionName);
+	},
+	"POST /api/get-all-categories" => function () use ($categoriesController) {
+		logger()->debug("get all categories ---");
+		$categoriesController->getAll();
+	},
+
+	"POST /api/get-all-units" => function () use ($unitsController) {
+		$unitsController->getAll();
+	},
+
+	"POST /api/get-all-questions" => function () use ($questionsController) {
+		$questionsController->getAll();
+	},
 	// 認証必要
 	"POST /api/sync" => function () use ($syncController) {
 		$userId = AuthMiddleware::handle();
@@ -73,6 +133,8 @@ $routes = [
 		$userId = AuthMiddleware::handle();
 		$unitHighScoresController->save($userId);
 	},
+
+
 
 	"POST /api/getall-unit-high-scores" => function () use ($unitHighScoresController) {
 		$userId = AuthMiddleware::handle();
@@ -131,6 +193,12 @@ if (isset($routes[$key])) {
 	$routes[$key]();
 	exit();
 }
+
+logger()->debug("REQUEST_URI = " . $_SERVER["REQUEST_URI"]);
+logger()->debug("URI = " . $uri);
+logger()->debug("METHOD = " . $method);
+logger()->debug("KEY = " . $key);
+
 
 http_response_code(404);
 echo json_encode(["error" => "Not Found"]);

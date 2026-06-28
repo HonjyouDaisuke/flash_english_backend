@@ -11,7 +11,7 @@ function runUnitsSeed(PDO $pdo)
 	$pdo->beginTransaction();
 	try {
 		$stmt = $pdo->prepare("
-      INSERT INTO units (
+      REPLACE INTO units (
         unit_id,
         category_no,
 		    unit_no,

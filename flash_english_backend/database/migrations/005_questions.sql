@@ -10,8 +10,8 @@ CREATE TABLE questions (
     japanese TEXT NOT NULL,
     english TEXT NOT NULL,
 
-    japanese_audio_path TEXT,
-    english_audio_path TEXT,
+    japanese_audio TEXT,
+    english_audio TEXT,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
