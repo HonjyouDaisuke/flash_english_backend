@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS master_version;
 CREATE TABLE master_version (
     version_id INTEGER PRIMARY KEY,
     version_no VARCHAR(20) NOT NULL,
-    version_name TEXT NOT NULL,
+    version_name TEXT NOT NULL UNIQUE,
     version_description TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
