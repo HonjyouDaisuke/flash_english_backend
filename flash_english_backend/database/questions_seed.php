@@ -11,27 +11,27 @@ function runQuestionsSeed(PDO $pdo)
 	$pdo->beginTransaction();
 	try {
 		$stmt = $pdo->prepare("
-      INSERT INTO questions (
-        question_id,
-        category_no,
-        unit_no,
-        question_no,
-        japanese,
-        english,
-        japanese_audio_path,
-        english_audio_path
-      )
-      VALUES (
-        :question_id,
-        :category_no,
-        :unit_no,
-        :question_no,
-        :japanese,
-        :english,
-        :japanese_audio_path,
-        :english_audio_path
-      )
-    ");
+								REPLACE INTO questions (
+										question_id,
+										category_no,
+										unit_no,
+										question_no,
+										japanese,
+										english,
+										japanese_audio,
+										english_audio
+								)
+								VALUES (
+										:question_id,
+										:category_no,
+										:unit_no,
+										:question_no,
+										:japanese,
+										:english,
+										:japanese_audio,
+										:english_audio
+								)
+						");
 		foreach ($json as $index => $question) {
 			if (
 				!isset($question['question_id']) ||
@@ -54,8 +54,8 @@ function runQuestionsSeed(PDO $pdo)
 				':question_no' => $question['number'],
 				':japanese' => $question['japanese'],
 				':english' => $question['english'],
-				':japanese_audio_path' => $question['japanese_audio'],
-				':english_audio_path' => $question['english_audio'],
+				':japanese_audio' => $question['japanese_audio'],
+				':english_audio' => $question['english_audio'],
 			]);
 		}
 		$pdo->commit();
