@@ -139,8 +139,6 @@ $routes = [
 		$unitHighScoresController->save($userId);
 	},
 
-
-
 	"POST /api/getall-unit-high-scores" => function () use ($unitHighScoresController) {
 		$userId = AuthMiddleware::handle();
 		logger()->debug('getAll Unit High Scores userId = ' . $userId);

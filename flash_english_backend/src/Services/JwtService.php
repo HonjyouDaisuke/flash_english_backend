@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Firebase\JWT\ExpiredException;
 
 class JwtService
 {
@@ -44,6 +45,25 @@ class JwtService
 	// ======================
 	public static function verify(string $token): string
 	{
-		return JWT::decode($token, new Key(self::$secret, "HS256"))->sub;
+		try {
+			$decoded = JWT::decode(
+				$token,
+				new Key(self::$secret, "HS256")
+			);
+
+			return $decoded->sub;
+		} catch (ExpiredException $e) {
+			http_response_code(401);
+			echo json_encode([
+				"error" => "TOKEN_EXPIRED"
+			]);
+			exit();
+		} catch (\Exception $e) {
+			http_response_code(401);
+			echo json_encode([
+				"error" => "INVALID_TOKEN"
+			]);
+			exit();
+		}
 	}
 }

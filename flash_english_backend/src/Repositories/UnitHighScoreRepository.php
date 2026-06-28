@@ -45,19 +45,20 @@ class UnitHighScoreRepository
 		return $result !== false ? $result : null;
 	}
 
-	public function getAllHighScoreInfo(string $userId, int $categoryNo): array
+	public function getAllHighScoreInfo(string $userId): array
 	{
+		logger()->debug("getAllHightScoreInfo-------");
 		$sql = file_get_contents(__DIR__ . "/sql/select_all_unit_high_score.sql");
 		$stmt = $this->pdo->prepare($sql);
-		logger()->debug("fetch units score " . $sql . ":u-" . $userId . ":c-" . $categoryNo);
 		if (!$stmt) {
 			return [];
 		}
 		$stmt->execute([
 			":user_id" => $userId,
-			":category_no" => $categoryNo
 		]);
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		logger()->debug("fetch units score " . $sql . ":u-" . $userId);
+
 		logger()->debug(print_r($result, true));
 		logger()->debug('-------------');
 		return $result;
