@@ -28,9 +28,7 @@ class CategoriesRepository
 			return null;
 		}
 		$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		if (!$rows) {
-			return null;
-		}
+		return $rows;
 		return $rows;
 	}
 }
