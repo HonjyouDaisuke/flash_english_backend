@@ -104,6 +104,11 @@ $routes = [
 		$raw = json_decode(file_get_contents("php://input"), true);
 
 		$versionName = $raw['version_name'] ?? null;
+		if (!is_string($versionName) || trim($versionName) === '') {
+			http_response_code(400);
+			echo json_encode(["error" => "version_name is required"]);
+			return;
+		}
 		$masterVersionController->GetMasterVersionInfo($versionName);
 	},
 	"POST /api/get-all-categories" => function () use ($categoriesController) {
