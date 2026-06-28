@@ -20,8 +20,9 @@ class CategoriesController
 			http_response_code(200);
 			echo json_encode(["categories" => $categories]);
 		} catch (\Exception $e) {
-			http_response_code(400);
-			echo json_encode(["error" => $e->getMessage()]);
+			http_response_code(500);
+			logger()->debug("categories fetch error : {$e->getMessage()}");
+			echo json_encode(["error" => "categories fetch error!"]);
 		}
 	}
 }

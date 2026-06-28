@@ -13,7 +13,7 @@ class GetAllQuestionsUseCase
 		$this->repo = $repo;
 	}
 
-	public function getAll(): ?array
+	public function getAll(): array
 	{
 		return $this->repo->getAll();
 	}

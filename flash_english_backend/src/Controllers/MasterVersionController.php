@@ -30,8 +30,9 @@ class MasterVersionController
 			http_response_code(200);
 			echo json_encode(["is_need_update" => $isNeedUpdate]);
 		} catch (\Exception $e) {
-			http_response_code(400);
-			echo json_encode(["error" => $e->getMessage()]);
+			http_response_code(500);
+			logger()->debug("master update check error : {$e->getMessage()}");
+			echo json_encode(["error" => "master update check error!"]);
 		}
 	}
 

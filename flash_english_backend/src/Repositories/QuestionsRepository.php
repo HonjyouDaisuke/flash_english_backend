@@ -13,23 +13,15 @@ class QuestionsRepository
 		$this->pdo = $pdo;
 	}
 
-	public function getAll(): ?array
+	public function getAll(): array
 	{
 		$sql = file_get_contents(__DIR__ . "/sql/select_all_questions.sql");
-		$stmt = $this->pdo->prepare($sql);
-		if (!$stmt) {
-			return null;
+
+		$stmt = $this->pdo->query($sql);
+		if ($stmt === false) {
+			throw new \RuntimeException("Failed to fetch questions.");
 		}
 
-		$result = $stmt->execute();
-
-		if (!$result) {
-			return null;
-		}
-		$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		if (!$rows) {
-			return null;
-		}
-		return $rows;
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 }
