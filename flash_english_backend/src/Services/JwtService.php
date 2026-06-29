@@ -57,6 +57,10 @@ class JwtService
 				throw new \Exception("INVALID_TOKEN_TYPE");
 			}
 
+			if (!isset($decoded->sub) || !is_string($decoded->sub) || $decoded->sub === '') {
+				throw new \Exception("INVALID_SUB");
+			}
+
 			return $decoded->sub;
 		} catch (ExpiredException $e) {
 			http_response_code(401);
