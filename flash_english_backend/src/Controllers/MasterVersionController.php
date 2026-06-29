@@ -16,16 +16,36 @@ class MasterVersionController
 		$this->getUseCase = $getUseCase;
 	}
 
-	public function IsNeedMasterUpdate(string $versionName, string $currentVersion): void
+	private function validateVersionName(mixed $versionName): string
 	{
-		$input = json_decode(file_get_contents("php://input"), true);
-		if (!$input) {
-			http_response_code(400);
-			echo json_encode(["error" => "Invalid JSON"]);
-			return;
+		if (!is_string($versionName)) {
+			throw new \InvalidArgumentException('version_name must be a string.');
 		}
 
+		$versionName = trim($versionName);
+
+		if ($versionName === '') {
+			throw new \InvalidArgumentException('version_name is required.');
+		}
+
+		if (mb_strlen($versionName) > 50) {
+			throw new \InvalidArgumentException('version_name must be 50 characters or fewer.');
+		}
+
+		return $versionName;
+	}
+
+	public function IsNeedMasterUpdate(string $versionName, string $currentVersion): void
+	{
+		// $input = json_decode(file_get_contents("php://input"), true);
+		// if (!$input) {
+		// 	http_response_code(400);
+		// 	echo json_encode(["error" => "Invalid JSON"]);
+		// 	return;
+		// }
+
 		try {
+			$versionName = $this->validateVersionName($versionName);
 			$isNeedUpdate = $this->useCase->isNeedUpdate($versionName, $currentVersion);
 			http_response_code(200);
 			echo json_encode(["is_need_update" => $isNeedUpdate]);
@@ -38,14 +58,15 @@ class MasterVersionController
 
 	public function GetMasterVersionInfo(string $versionName): void
 	{
-		$input = json_decode(file_get_contents("php://input"), true);
-		if (!$input) {
-			http_response_code(400);
-			echo json_encode(["error" => "Invalid JSON"]);
-			return;
-		}
+		// $input = json_decode(file_get_contents("php://input"), true);
+		// if (!$input) {
+		// 	http_response_code(400);
+		// 	echo json_encode(["error" => "Invalid JSON"]);
+		// 	return;
+		// }
 
 		try {
+			$versionName = $this->validateVersionName($versionName);
 			$versionInfo = $this->getUseCase->GetMasterVersionInfo($versionName);
 			http_response_code(200);
 			echo json_encode(["master_version" => $versionInfo]);
