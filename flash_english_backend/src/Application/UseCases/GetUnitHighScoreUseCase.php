@@ -29,14 +29,10 @@ class GetUnitHighScoreUseCase
 		);
 	}
 
-	public function getAll(string $userId, array $data): array
+	public function getAll(string $userId): array
 	{
-		if (!array_key_exists("category_no", $data)) {
-			throw new \InvalidArgumentException("Missing required field: category_no");
-		}
 		return $this->repo->getAllHighScoreInfo(
 			$userId,
-			(int)$data["category_no"],
 		);
 	}
 }
