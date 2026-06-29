@@ -43,13 +43,19 @@ class JwtService
 	// ======================
 	// 検証
 	// ======================
-	public static function verify(string $token): string
-	{
+	public static function verify(
+		string $token,
+		string $expectedType = "access"
+	): string {
 		try {
 			$decoded = JWT::decode(
 				$token,
 				new Key(self::$secret, "HS256")
 			);
+
+			if (($decoded->type ?? null) !== $expectedType) {
+				throw new \Exception("INVALID_TOKEN_TYPE");
+			}
 
 			return $decoded->sub;
 		} catch (ExpiredException $e) {

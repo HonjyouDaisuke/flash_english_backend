@@ -29,7 +29,7 @@ class GetUnitHighScoreUseCase
 		);
 	}
 
-	public function getAll(string $userId, array $data): array
+	public function getAll(string $userId): array
 	{
 		return $this->repo->getAllHighScoreInfo(
 			$userId,

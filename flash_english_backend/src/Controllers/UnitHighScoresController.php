@@ -61,16 +61,9 @@ class UnitHighScoresController
 
 	public function getAll(string $userId): void
 	{
-		$input = json_decode(file_get_contents("php://input"), true);
 		logger()->debug('Start score_load...');
-		if (!$input) {
-			http_response_code(400);
-			echo json_encode(["error" => "Invalid JSON"]);
-			return;
-		}
-		logger()->debug('Load success...');
 		try {
-			$result = $this->getUseCase->getAll($userId, $input);
+			$result = $this->getUseCase->getAll($userId);
 			logger()->debug('Loaded data...');
 			echo json_encode($result);
 		} catch (\Exception $e) {
