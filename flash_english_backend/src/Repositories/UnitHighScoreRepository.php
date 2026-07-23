@@ -92,7 +92,7 @@ class UnitHighScoreRepository
 			logger()->debug('FileSave Nothing');
 
 			// [NOTHING] ハイスコアが存在し、かつ新しいスコアがハイスコアを超えていない場合は更新しない
-			return false;
+			return true;
 		} else {
 			// [UPDATE] ハイスコアが存在し、かつ新しいスコアがハイスコアを超えている場合は更新する
 			logger()->debug('FileSave Update');
