@@ -146,6 +146,7 @@ $routes = [
 		$unitHighScoresController->getAll($userId);
 	},
 
+	// 追加: 学習ログ取得API
 	"POST /api/get-study-logs" => function () use ($studyLogController) {
 		$userId = AuthMiddleware::handle();
 		logger()->debug('getAll Study Logs userId = ' . $userId);
