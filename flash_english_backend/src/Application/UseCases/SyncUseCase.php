@@ -38,6 +38,7 @@ class SyncUseCase
 					case "study_log":
 						logger()->debug('Processing study_log event: ' . $event["event_id"]);
 						$ok = $this->studyLogRepository->save(
+							$payload["id"],
 							$userId,
 							$payload["category_no"],
 							$payload["unit_no"],
@@ -47,6 +48,7 @@ class SyncUseCase
 							$payload["duration_seconds"],
 							$payload["created_at"] ?? null,
 						);
+						logger()->debug('Processing study_log result: ' . $ok);
 						if (!$ok) {
 							throw new \Exception("Failed to save study log");
 						}
