@@ -1,5 +1,6 @@
 INSERT INTO study_logs 
 (
+  id,
   user_id,
   category_no,
   unit_no,
@@ -11,6 +12,7 @@ INSERT INTO study_logs
 ) 
 VALUES 
 (
+  :id,
   :user_id,
   :category_no,
   :unit_no,

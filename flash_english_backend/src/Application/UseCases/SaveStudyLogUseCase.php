@@ -17,6 +17,7 @@ class SaveStudyLogUseCase
 	public function execute(string $userId, array $data): void
 	{
 		$this->repo->save(
+			$data["id"],
 			$userId,
 			$data["category_no"],
 			$data["unit_no"],

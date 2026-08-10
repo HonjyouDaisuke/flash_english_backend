@@ -3,15 +3,18 @@
 namespace App\Controllers;
 
 use App\Application\UseCases\SaveStudyLogUseCase;
+use App\Application\UseCases\GetStudyLogUseCase;
 
 class StudyLogController
 {
-	private SaveStudyLogUseCase $useCase;
+	private SaveStudyLogUseCase $saveUseCase;
+	private GetStudyLogUseCase $getUseCase;
 	private string $logFile = __DIR__ . "/../../public/debug.log";
 
-	public function __construct(SaveStudyLogUseCase $useCase)
+	public function __construct(SaveStudyLogUseCase $saveUseCase, GetStudyLogUseCase $getUseCase)
 	{
-		$this->useCase = $useCase;
+		$this->saveUseCase = $saveUseCase;
+		$this->getUseCase = $getUseCase;
 	}
 
 	public function save(string $userId): void
@@ -24,12 +27,23 @@ class StudyLogController
 		}
 
 		try {
-			$this->useCase->execute($userId, $input);
+			$this->saveUseCase->execute($userId, $input);
 			echo json_encode(["success" => "true"]);
 		} catch (\Exception $e) {
 			http_response_code(400);
 			http_response_code(400);
 			echo json_encode(["error" => $e->getMessage()]);
+		}
+	}
+
+	public function getSince(string $userId, ?string $since): void
+	{
+		try {
+			$logs = $this->getUseCase->getSince($userId, $since);
+			echo json_encode(["success" => true, "logs" => $logs]);
+		} catch (\Exception $e) {
+			http_response_code(400);
+			echo json_encode(["error" => "internal server error"]);
 		}
 	}
 }

@@ -2,7 +2,7 @@ SELECT
     question_id,
     category_no,
     unit_no,
-    question_no as number,
+    question_no,
     japanese,
     english,
     japanese_audio,

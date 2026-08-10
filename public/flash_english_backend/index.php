@@ -12,6 +12,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\UnitHighScoreRepository;
 use App\Application\UseCases\GoogleLoginUseCase;
 use App\Application\UseCases\SaveStudyLogUseCase;
+use App\Application\UseCases\GetStudyLogUseCase;
 use App\Application\UseCases\SaveUnitHighScoreUseCase;
 use App\Application\UseCases\GetUserSettingUseCase;
 use App\Application\UseCases\GetUserSettingsUseCase;
@@ -59,7 +60,7 @@ $questionsRepo = new QuestionsRepository($db);
 
 // Contorller
 $authController = new AuthController(new GoogleLoginUseCase($userRepo));
-$studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo));
+$studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo), new GetStudyLogUseCase($studyLogRepo));
 $unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo), new GetUnitHighScoreUseCase($unitHighScoreRepo));
 $userSettingsController = new UserSettingsController(new GetUserSettingUseCase($userSettingsRepo), new GetUserSettingsUseCase($userSettingsRepo));
 $pingController = new PingController();
@@ -143,6 +144,12 @@ $routes = [
 		$userId = AuthMiddleware::handle();
 		logger()->debug('getAll Unit High Scores userId = ' . $userId);
 		$unitHighScoresController->getAll($userId);
+	},
+
+	"POST /api/get-study-logs" => function () use ($studyLogController) {
+		$userId = AuthMiddleware::handle();
+		logger()->debug('getAll Study Logs userId = ' . $userId);
+		$studyLogController->getSince($userId, $_POST['since'] ?? null);
 	},
 
 	"POST /api/getall-user-settings" => function () use ($userSettingsController) {
