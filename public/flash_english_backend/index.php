@@ -150,7 +150,10 @@ $routes = [
 	"POST /api/get-study-logs" => function () use ($studyLogController) {
 		$userId = AuthMiddleware::handle();
 		logger()->debug('getAll Study Logs userId = ' . $userId);
-		$studyLogController->getSince($userId, $_POST['since'] ?? null);
+		$raw = json_decode(file_get_contents("php://input"), true);
+
+		$since = $raw['since'] ?? $_POST['since'] ?? null;
+		$studyLogController->getSince($userId, $since);
 	},
 
 	"POST /api/getall-user-settings" => function () use ($userSettingsController) {

@@ -38,6 +38,7 @@ class SyncUseCase
 					case "study_log":
 						logger()->debug('Processing study_log event: ' . $event["event_id"]);
 						$ok = $this->studyLogRepository->save(
+							$payload["id"],
 							$userId,
 							$payload["category_no"],
 							$payload["unit_no"],
