@@ -16,8 +16,13 @@ class SaveStudyLogUseCase
 
 	public function execute(string $userId, array $data): void
 	{
+		$id = $data["id"] ?? null;
+		if (!is_string($id) || trim($id) === '') {
+			throw new \InvalidArgumentException("Missing required field: id");
+		}
+
 		$this->repo->save(
-			$data["id"],
+			$id,
 			$userId,
 			$data["category_no"],
 			$data["unit_no"],
