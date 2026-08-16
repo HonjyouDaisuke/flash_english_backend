@@ -70,4 +70,30 @@ class StudyLogRepository
 
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
+
+	public function getQuestionStats(string $userId): array
+	{
+		$sql = file_get_contents(__DIR__ . "/sql/get_question_stats.sql");
+		$stmt = $this->pdo->prepare($sql);
+		if (!$stmt) {
+			throw new \RuntimeException("Failed to prepare statement for fetching question stats.");
+		}
+
+		$stmt->execute([
+			":user_id" => $userId,
+		]);
+
+		$stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+		return array_map(function (array $row): array {
+			$row['question_id'] = (int) $row['question_id'];
+			$row['category_no'] = (int) $row['category_no'];
+			$row['unit_no'] = (int) $row['unit_no'];
+			$row['question_no'] = (int) $row['question_no'];
+			$row['correct_count'] = (int) $row['correct_count'];
+			$row['wrong_count'] = (int) $row['wrong_count'];
+
+			return $row;
+		}, $stats);
+	}
 }

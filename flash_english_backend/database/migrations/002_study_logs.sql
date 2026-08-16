@@ -9,5 +9,13 @@ CREATE TABLE study_logs (
     is_correct BOOLEAN,
     session_id INT,
     duration_seconds INT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_study_logs_user_question_stats (
+        user_id,
+        category_no,
+        unit_no,
+        question_no,
+        is_correct
+    )
 );

@@ -37,6 +37,7 @@ use App\Controllers\QuestionsController;
 use App\Application\UseCases\GetAllQuestionsUseCase;
 use App\Application\UseCases\GetMasterVersionInfoUseCase;
 use App\Repositories\QuestionsRepository;
+use App\Application\UseCases\GetQuestionStatsUseCase;
 
 header("Content-Type: application/json");
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
@@ -60,7 +61,7 @@ $questionsRepo = new QuestionsRepository($db);
 
 // Contorller
 $authController = new AuthController(new GoogleLoginUseCase($userRepo));
-$studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo), new GetStudyLogUseCase($studyLogRepo));
+$studyLogController = new StudyLogController(new SaveStudyLogUseCase($studyLogRepo), new GetStudyLogUseCase($studyLogRepo), new GetQuestionStatsUseCase($studyLogRepo));
 $unitHighScoresController = new UnitHighScoresController(new SaveUnitHighScoreUseCase($unitHighScoreRepo), new GetUnitHighScoreUseCase($unitHighScoreRepo));
 $userSettingsController = new UserSettingsController(new GetUserSettingUseCase($userSettingsRepo), new GetUserSettingsUseCase($userSettingsRepo));
 $pingController = new PingController();
@@ -154,6 +155,13 @@ $routes = [
 
 		$since = $raw['since'] ?? $_POST['since'] ?? null;
 		$studyLogController->getSince($userId, $since);
+	},
+
+	// 追加: 質問統計取得API(苦手問題算出用)
+	"POST /api/get-question-stats" => function () use ($studyLogController) {
+		$userId = AuthMiddleware::handle();
+		logger()->debug('get Question Stats requested');
+		$studyLogController->getQuestionStats($userId);
 	},
 
 	"POST /api/getall-user-settings" => function () use ($userSettingsController) {
