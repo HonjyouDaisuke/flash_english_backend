@@ -55,8 +55,8 @@ class StudyLogController
 		try {
 			$stats = $this->getQuestionStatsUseCase->getQuestionStats($userId);
 			echo json_encode(["success" => true, "stats" => $stats]);
-		} catch (\Exception $e) {
-			http_response_code(400);
+		} catch (\Throwable $e) {
+			http_response_code(500);
 			echo json_encode(["error" => "internal server error"]);
 		}
 	}
