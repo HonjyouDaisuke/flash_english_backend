@@ -160,7 +160,7 @@ $routes = [
 	// 追加: 質問統計取得API(苦手問題算出用)
 	"POST /api/get-question-stats" => function () use ($studyLogController) {
 		$userId = AuthMiddleware::handle();
-		logger()->debug('get Question Stats userId = ' . $userId);
+		logger()->debug('get Question Stats requested');
 		$studyLogController->getQuestionStats($userId);
 	},
 
